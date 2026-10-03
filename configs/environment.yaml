@@ -1,0 +1,9 @@
+environment:
+  multipart:
+    status: "pending_uploader_and_experiment_environment"
+    upload_client: null
+    client_version: null
+    threshold_bytes: null
+    part_size_bytes: null
+    threshold_comparison: null
+    verification_evidence: null

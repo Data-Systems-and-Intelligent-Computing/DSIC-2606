@@ -1,0 +1,16 @@
+batching:
+  ordering_rule: "sorted_by_recording_id_ascending"
+  batch_size: 10
+  corpora:
+    main:
+      manifest: "data/manifests/manifest_main.csv"
+      total_files: 301
+    kantin:
+      manifest: "data/manifests/manifest_kantin.csv"
+      total_files: 121
+    embungd:
+      manifest: "data/manifests/manifest_embungd.csv"
+      total_files: 101
+    kebunraya:
+      manifest: "data/manifests/manifest_kebunraya.csv"
+      total_files: 100

@@ -1,0 +1,5 @@
+checkpoint:
+  persistent_root: null
+  location_template: "{persistent_root}/{run_id}/{treatment}"
+  required_survival: "driver_process_restart"
+  status: "pending_runtime_storage_selection"

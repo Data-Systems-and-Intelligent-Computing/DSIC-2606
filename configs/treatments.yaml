@@ -1,0 +1,11 @@
+treatments:
+  common:
+    idempotence_enabled: false
+    ordering_rule: "sorted_by_recording_id_ascending"
+    batch_size: 10
+
+  B0:
+    checkpoint_location: null
+
+  B1:
+    checkpoint_location: "{persistent_root}/{run_id}/{treatment}"

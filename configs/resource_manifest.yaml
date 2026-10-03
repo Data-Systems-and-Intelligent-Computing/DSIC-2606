@@ -1,12 +1,12 @@
 resource_manifest:
   development_environment:
     captured_on: "2026-10-03"
-    role: "Lingkungan lokal untuk uji coba dan debugging; bukan environment eksperimen"
+    role: "Lokal untuk uji coba/debugging; bukan environment eksperimen"
     docker_engine:
       architecture: "linux/amd64"
       available_cpus: 16
       available_memory_bytes: 7897960448
-      available_memory_gib_approx: 7.36
+      available_memory_gib: 7.36
       captured_by: "docker info"
       running_containers_at_capture: 0
       per_container_limits: null
@@ -14,7 +14,6 @@ resource_manifest:
   experiment_environment:
     status: "pending_cloud_access"
     provider: null
-    instance_type: null
     cpu_cores: null
     memory_bytes: null
     storage_bytes: null

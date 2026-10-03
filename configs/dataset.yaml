@@ -1,0 +1,23 @@
+dataset:
+  name: "AudioMoth Dual-Corpus"
+
+  main_corpus_dir: "data/raw/audiomoth/main"
+  robustness_corpus_dirs:
+    - "data/raw/audiomoth/robustness/kantin"
+    - "data/raw/audiomoth/robustness/embung d"
+    - "data/raw/audiomoth/robustness/kebun raya"
+  manifest_output_dir: "data/manifests"
+
+  source_timezone: "Asia/Jakarta"
+  output_timezone: "UTC"
+
+  recording_id:
+    rule: "{device_id}_{filename_stem}"
+
+  expected_object_uri:
+    scheme: "s3"
+    bucket: "audiomoth"
+    rule: "{scheme}://{bucket}/{device_id}/{start_time_utc_date}/{original_filename}"
+
+  expected_metadata:
+    rule: "{recording_id}"

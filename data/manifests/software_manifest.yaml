@@ -1,0 +1,34 @@
+software_manifest:
+  development_host:
+    captured_on: "2026-10-03"
+    python: "3.12.10"
+    python_package_inventory_scope: "global host environment; not asserted as experiment dependencies"
+    java: "Eclipse Temurin OpenJDK 11.0.31"
+    docker_desktop: "4.72.0"
+    docker_client: "29.4.2"
+    docker_engine: "29.4.2"
+    docker_engine_platform: "linux/amd64"
+
+  candidate_images_not_yet_verified_as_experiment_runtime:
+    - name: "bigdata-spark"
+      tag: "latest"
+      digest: "sha256:96d8d58cc24e5558c2bd74feb556c285ede863405ad0d42c8d32a8ff7672a79e"
+      status: "available_locally_not_running"
+    - name: "minio/minio"
+      tag: "latest"
+      digest: "sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e"
+      status: "available_locally_not_running"
+    - name: "trinodb/trino"
+      tag: "latest"
+      digest: "sha256:5b5e0a97f599a30a2e23c7c7061e4e4d546a914b4fad2a2a002998140ceb4006"
+      status: "available_locally_not_running"
+      role: "optional audit; include in experiment only if selected"
+
+  experiment_runtime:
+    status: "pending_cloud_and_runtime_verification"
+    spark_version: null
+    minio_version: null
+    iceberg_runtime_version: null
+    trino_version: null
+    image_digests_used: null
+
