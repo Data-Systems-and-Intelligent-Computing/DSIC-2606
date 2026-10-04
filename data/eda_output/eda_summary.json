@@ -1,0 +1,123 @@
+{
+  "description": "Metadata-only corpus EDA; audio contents are not read.",
+  "expected_start_to_start_gap_seconds": 60,
+  "manifests": [
+    {
+      "manifest": "Main",
+      "csv": "data\\manifests\\manifest_main.csv",
+      "files": 301,
+      "unique_device_ids": [
+        "MAIN_5JAM"
+      ],
+      "time_start_utc": "2026-09-24T06:30:00+00:00",
+      "time_end_utc": "2026-09-24T11:32:32+00:00",
+      "first_to_last_hours": 5.042222,
+      "size_bytes": {
+        "total": 1056240488,
+        "min": 488,
+        "max": 3520800,
+        "mean": 3509104.61,
+        "median": 3520800,
+        "unique_value_counts": {
+          "488": 1,
+          "3520800": 300
+        },
+        "total_MiB": 1007.309
+      },
+      "time_gap_counts_seconds": {
+        "60.0": 299,
+        "212.0": 1
+      },
+      "unique_sha256": 301
+    },
+    {
+      "manifest": "Kantin",
+      "csv": "data\\manifests\\manifest_kantin.csv",
+      "files": 121,
+      "unique_device_ids": [
+        "KANTIN"
+      ],
+      "time_start_utc": "2026-09-23T03:00:00+00:00",
+      "time_end_utc": "2026-09-23T05:01:45+00:00",
+      "first_to_last_hours": 2.029167,
+      "size_bytes": {
+        "total": 422496488,
+        "min": 488,
+        "max": 3520800,
+        "mean": 3491706.51,
+        "median": 3520800,
+        "unique_value_counts": {
+          "488": 1,
+          "3520800": 120
+        },
+        "total_MiB": 402.924
+      },
+      "time_gap_counts_seconds": {
+        "60.0": 119,
+        "165.0": 1
+      },
+      "unique_sha256": 121
+    },
+    {
+      "manifest": "Embung_D",
+      "csv": "data\\manifests\\manifest_embungd.csv",
+      "files": 101,
+      "unique_device_ids": [
+        "EMBUNGD"
+      ],
+      "time_start_utc": "2026-09-25T05:10:00+00:00",
+      "time_end_utc": "2026-09-25T06:58:30+00:00",
+      "first_to_last_hours": 1.808333,
+      "size_bytes": {
+        "total": 352080488,
+        "min": 488,
+        "max": 3520800,
+        "mean": 3485945.43,
+        "median": 3520800,
+        "unique_value_counts": {
+          "488": 1,
+          "3520800": 100
+        },
+        "total_MiB": 335.77
+      },
+      "time_gap_counts_seconds": {
+        "60.0": 99,
+        "570.0": 1
+      },
+      "unique_sha256": 101
+    },
+    {
+      "manifest": "Kebun_Raya",
+      "csv": "data\\manifests\\manifest_kebunraya.csv",
+      "files": 100,
+      "unique_device_ids": [
+        "KEBUNRAYA"
+      ],
+      "time_start_utc": "2026-09-24T04:10:00+00:00",
+      "time_end_utc": "2026-09-24T05:49:00+00:00",
+      "first_to_last_hours": 1.65,
+      "size_bytes": {
+        "total": 352080000,
+        "min": 3520800,
+        "max": 3520800,
+        "mean": 3520800,
+        "median": 3520800.0,
+        "unique_value_counts": {
+          "3520800": 100
+        },
+        "total_MiB": 335.77
+      },
+      "time_gap_counts_seconds": {
+        "60.0": 99
+      },
+      "unique_sha256": 100
+    }
+  ],
+  "combined": {
+    "files": 623,
+    "unique_sha256": 623,
+    "total_size_bytes": 2182897464,
+    "total_size_MiB": 2081.773
+  },
+  "anomaly_count": 6
+}

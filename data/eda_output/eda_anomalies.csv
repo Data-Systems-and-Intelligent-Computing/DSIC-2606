@@ -1,0 +1,7 @@
+﻿csv_line,detail,expected_gap_seconds,file_size_bytes,gap_seconds,manifest,modal_size_bytes,previous_recording_id,recording_id,source_csv,type
+302,Selisih 212 detik; ekspektasi 60 detik,60,,212.0,Main,,MAIN_5JAM_20260924_182900,MAIN_5JAM_20260924_183232,data\manifests\manifest_main.csv,unexpected_time_gap
+302,Ukuran 488 byte; ukuran terbanyak 3520800 byte,,488,,Main,3520800,,MAIN_5JAM_20260924_183232,data\manifests\manifest_main.csv,non_modal_file_size
+122,Selisih 165 detik; ekspektasi 60 detik,60,,165.0,Kantin,,KANTIN_20260923_115900,KANTIN_20260923_120145,data\manifests\manifest_kantin.csv,unexpected_time_gap
+122,Ukuran 488 byte; ukuran terbanyak 3520800 byte,,488,,Kantin,3520800,,KANTIN_20260923_120145,data\manifests\manifest_kantin.csv,non_modal_file_size
+102,Selisih 570 detik; ekspektasi 60 detik,60,,570.0,Embung_D,,EMBUNGD_20260925_134900,EMBUNGD_20260925_135830,data\manifests\manifest_embungd.csv,unexpected_time_gap
+102,Ukuran 488 byte; ukuran terbanyak 3520800 byte,,488,,Embung_D,3520800,,EMBUNGD_20260925_135830,data\manifests\manifest_embungd.csv,non_modal_file_size
