@@ -299,4 +299,3 @@ global_position,batch_number,position_in_batch,recording_id,is_first_in_batch,is
 297,29,7,MAIN_5JAM_20260924_182700,False,False
 298,29,8,MAIN_5JAM_20260924_182800,False,False
 299,29,9,MAIN_5JAM_20260924_182900,False,True
-300,30,0,MAIN_5JAM_20260924_183232,True,True

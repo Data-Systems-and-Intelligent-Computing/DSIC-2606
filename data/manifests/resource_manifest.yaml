@@ -12,11 +12,28 @@ resource_manifest:
       per_container_limits: null
 
   experiment_environment:
-    status: "pending_cloud_access"
-    provider: null
-    instance_type: null
-    cpu_cores: null
-    memory_bytes: null
-    storage_bytes: null
-    operating_system: null
+    status: "frozen"
+    provider: "Google Cloud Compute Engine"
+    project: "sigerciv1"
+    zone: "asia-southeast2-a"
+    instance_type: "e2-standard-4"
+    provisioning_model: "STANDARD"
+    boot_image: "ubuntu-2404-noble-amd64-v20260918"
+    boot_disk_gb: 30
+    data_disk_gb: 50
+    data_disk_type: "pd-balanced"
+    provided_by: "laboratorium (dsic-lab-infra)"
+    observed:
+      captured_at_utc: "2026-10-06T07:44:08Z"
+      hostname: "dsic-lab-01.asia-southeast2-a.c.sigerciv1.internal"
+      operating_system: "Ubuntu 24.04.5 LTS"
+      cpu_count: 4
+      cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz"
+      memory_total_kb: 16369284
+      memory_bytes: 16762146816
+      memory_gib_approx: 15.61
+      kernel: "7.0.0-1013-gcp"
+      docker: "Docker version 29.8.2, build 7fc2dff"
+      docker_compose: "Docker Compose version v5.6.0"
+      data_mount: "/dev/sdb ext4"
     per_service_limits: null
