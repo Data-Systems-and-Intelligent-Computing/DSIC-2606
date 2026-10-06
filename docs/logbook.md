@@ -62,4 +62,98 @@ Pengujian dilakukan untuk membuktikan bahwa lingkungan eksperimen tidak dapat me
 * **Sumber dan hasil seleksi:** Dari 301 WAV sumber, ukuran modal adalah 3.520.800 byte. Manifest eksperimen berisi 300 file. `20260924_183232.WAV` (488 byte) dikecualikan sesuai aturan ukuran. Pengecualian ini tidak dengan sendirinya menyimpulkan penyebab atau kondisi rekamannya.
 * **Manifest dan batch:** `scripts/generate_manifest.py` menghasilkan `data/manifests/manifest_main.csv` dengan 300 rekaman. `scripts/freeze_batch_order.py` menghasilkan `data/batches/batch_order_main.csv` dengan 30 batch, masing-masing 10 rekaman.
 * **Test:** `python -m unittest discover -s tests -v` — 9 test lulus, 0 gagal (0,102 detik).
-* **Batas bukti saat ini:** Hasil ini berasal dari pemrosesan lokal. Pencocokan independen terhadap salinan korpus di VM/bucket, pembekuan `corpus.sha256`, dan pembuatan `expected_metadata.csv` belum dilakukan.
+* **Status saat catatan ini dibuat:** Hasil saat itu berasal dari pemrosesan lokal; pencocokan VM, pembekuan `corpus.sha256`, dan pembuatan `expected_metadata.csv` belum dilakukan. Hasil langkah-langkah lanjutan dicatat pada entri setelahnya.
+
+**Pemeriksaan Pra-Unggah (Pre-Upload Check) - Korpus Main**
+* Lokasi lokal: `data/raw/audiomoth/main/*.WAV`
+* Jumlah berkas: 301 file
+* Total ukuran: 1056240488 bytes
+* Status izin bucket `gs://sigerciv1-dsic-2606-corpus/raw/main/`: Write/Append-only dikonfirmasi.
+
+**Pemeriksaan Pasca-Unggah (Post-Upload Check) - Korpus Main**
+* Perintah eksekusi: `gcloud storage cp --no-clobber ...`
+* Verifikasi ukuran di bucket: 1.056.240.488 bytes (Cocok dengan lokal)
+* Verifikasi jumlah file di bucket: 301 file (Cocok dengan lokal)
+* Status Unggahan: Sukses 100%, integritas data terkonfirmasi, tidak ada upload parsial.
+
+**Sinkronisasi dan Verifikasi VM (Lingkungan Lab) - Korpus Main**
+* Perintah eksekusi: `gcloud storage rsync`
+* Direktori eksperimen: `/data/corpus/main` (Berisi 300 file tervalidasi, ukuran ~1008 MB)
+* Direktori pengecualian: `/data/corpus/dikeluarkan` (Berisi 1 file: `20260924_183232.WAV` / 488 byte)
+* Status: Berkas mentah sukses disalin dari bucket sumber ke VM tanpa galat.
+
+**Log Penggunaan VM (dsic-lab-01)**
+* **Waktu Start:** 06 Oktober 2026, 21.54 WIB
+* **Waktu Stop:** 07 Oktober 2026, 01.25 WIB (status `TERMINATED` dikonfirmasi pada 01:25:22 +07:00).
+* **CPU Model:** Intel(R) Xeon(R) CPU @ 2.20GHz
+* **Aktivitas:** Sinkronisasi korpus (rsync), isolasi anomali 488 byte, dan pengecekan environment.
+
+**Verifikasi manifes terhadap salinan korpus di VM**
+- Perintah: `python3 verify_corpus.py data/manifests/manifest_main.csv /data/corpus/main`
+- Baris manifes: 300
+- Berkas di disk: 300
+- Hilang / berlebih / tidak cocok: 0 / 0 / 0
+- Hasil: COCOK; kode keluar 0
+
+**Langkah 4: Uji Negatif Verifikasi Korpus (Lingkungan VM)**
+* **Waktu Eksekusi:** 07 Oktober 2026, 00.01 WIB
+* **Perintah:** `python3 verify_corpus.py data/manifests/manifest_main.csv /data/work/uji-negatif`
+* **Hasil:** TIDAK COCOK (Kode keluar: 1)
+* **Status Uji:** SUKSES. Skrip verifikasi terbukti mampu mendeteksi berkas yang hilang (298 berkas) dan berkas yang korup/berubah ukuran (1 berkas).
+* **Tindakan:** Direktori uji `/data/work/uji-negatif` dihapus.
+
+**Pembekuan korpus Main di VM**
+- `/data/corpus/main` dibuat tidak dapat ditulis dengan `sudo chmod -R a-w`.
+- Dibuat `/data/work/DSIC-2606/data/manifests/corpus.sha256` menggunakan `sha256sum`.
+- Jumlah baris checksum: 300.
+- Folder uji negatif `/data/work/uji-negatif` dihapus setelah output disimpan.
+
+Placeholder checksum_manifest.csv dan corpus_manifest.csv yang berukuran 0 byte dihapus setelah dipastikan tidak dirujuk skrip atau konfigurasi. Metadata dan hash per rekaman mengacu pada manifes masing-masing korpus; checksum beku Main dicatat di corpus.sha256.
+
+## 7 Oktober 2026 — Pembaruan Fase 1: Metadata Acuan dan Provenans Perangkat
+
+### Pembuatan `expected_metadata.csv`
+
+- Skrip yang dijalankan: `python scripts/build_expected_metadata.py`.
+- Sumber: `data/manifests/manifest_main.csv`.
+- Baris manifest dibaca: 300; `recording_id` unik: 300.
+- Baris yang ditulis ke `data/ground_truth/expected_metadata.csv`: 300.
+- Kolom: `recording_id`, `device_id`, `start_time`, `object_uri`, `file_size_bytes`, `sha256`.
+- Nilai `object_uri` dibentuk dari `expected_object_uri` pada manifest.
+- Ground truth dibentuk dari manifest sebelum pipeline ingesti dijalankan; ia menjadi acuan rekonsiliasi, bukan hasil yang disalin dari keluaran pipeline.
+
+### Provenans `CONFIG.TXT`
+
+Empat konfigurasi sumber tersedia sebagai salinan di `data/manifests/device_provenance/`: `main_CONFIG.TXT`, `kantin_CONFIG.TXT`, `embungd_CONFIG.TXT`, dan `kebunraya_CONFIG.TXT`. Hash SHA-256 salinan diperiksa terhadap file konfigurasi sumber; keempatnya cocok.
+
+| Sesi | Device ID fisik | Firmware | Jadwal lokal (UTC+7) | WAV pertama yang diperiksa |
+|---|---|---|---|---|
+| Main | `242A260460377E01` | `AudioMoth-Firmware-Basic (1.12.1)` | 13:30–18:30, 24 September 2026 | `20260924_133000.WAV` |
+| Kantin | `242A260460377E01` | `AudioMoth-Firmware-Basic (1.12.1)` | 10:00–12:00, 23 September 2026 | `20260923_100000.WAV` |
+| Embung D | `242A260460377E01` | `AudioMoth-Firmware-Basic (1.12.1)` | 12:10–13:50, 25 September 2026 | `20260925_121000.WAV` |
+| Kebun Raya | `242A260460377E01` | `AudioMoth-Firmware-Basic (1.12.1)` | 11:10–12:50, 24 September 2026 | `20260924_111000.WAV` |
+
+Keempat `CONFIG.TXT` mencatat Device ID fisik yang sama, sehingga jumlah perangkat fisik berdasarkan konfigurasi yang diperiksa adalah **1**. Semuanya mencatat `Use device ID in WAV file name: No`; nama WAV tidak menyertakan ID fisik.
+
+Pak Dika mengonfirmasi pada 23 September 2026 bahwa waktu perangkat saat perekaman adalah waktu lokal UTC+7. Karena itu generator membaca timestamp nama file sebagai `Asia/Jakarta` dan menormalkannya ke UTC. Pada manifest Main, WAV pertama `20260924_133000.WAV` direpresentasikan sebagai `2026-09-24T06:30:00Z`.
+
+Kolom manifest `device_id` tetap berisi label sesi, misalnya `MAIN_5JAM`. Aturan `recording_id` saat ini menggabungkan label sesi dan nama dasar file; Device ID fisik dicatat terpisah di `docs/device_provenance.md` dan tidak mengganti label sesi.
+
+### Catatan waktu penggunaan VM
+
+Setelah perintah stop, pemeriksaan status menampilkan `TERMINATED` pada 2026-10-07 01:25:22 +07:00 (WIB). Waktu ini dicatat sebagai waktu konfirmasi status berhenti, bukan sebagai timestamp persis transisi VM ke `TERMINATED`.
+
+
+
+
+### Hasil test sebelum commit Fase 1
+
+Pada 7 Oktober 2026, setelah manifest, batch order, checksum, dan expected metadata tersedia, test suite dijalankan dari akar repo lokal:
+
+```text
+python -m unittest discover -s tests -v
+Ran 9 tests in 0.180s
+OK
+```
+
+Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna; tidak ada test yang dijalankan oleh Codex.

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skema Metadata Korpus AudioMoth",
+  "description": "Bentuk dan tipe satu rekaman pada expected_metadata.csv. Nilai acuan tetap berasal dari manifes korpus.",
+  "type": "object",
+  "properties": {
+    "recording_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identitas logis deterministik yang tercatat pada manifest."
+    },
+    "device_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Label perangkat/sesi sebagaimana tercatat pada manifest. Nilai manifest saat ini seperti MAIN_5JAM adalah label sesi, bukan bukti Device ID fisik AudioMoth; provenans fisik dicatat terpisah."
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$",
+      "description": "Waktu mulai dalam ISO 8601, dinormalisasi ke UTC dan diakhiri Z."
+    },
+    "object_uri": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^s3a?://[^/]+/.+$",
+      "description": "URI objek yang diharapkan di storage. Nilainya dipetakan dari expected_object_uri pada manifest; skema s3 dan s3a dapat dinormalisasi untuk perbandingan."
+    },
+    "file_size_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Ukuran berkas WAV dalam byte."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Digest SHA-256 heksadesimal huruf kecil dari berkas biner."
+    }
+  },
+  "required": [
+    "recording_id",
+    "device_id",
+    "start_time",
+    "object_uri",
+    "file_size_bytes",
+    "sha256"
+  ],
+  "additionalProperties": false
+}
