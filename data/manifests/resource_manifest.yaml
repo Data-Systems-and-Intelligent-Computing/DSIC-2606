@@ -9,7 +9,7 @@ resource_manifest:
       available_memory_gib_approx: 7.36
       captured_by: "docker info"
       running_containers_at_capture: 0
-      per_container_limits: null
+      per_container_limits_status: "not_applicable_at_capture_no_containers_running"
 
   experiment_environment:
     status: "frozen"
@@ -24,16 +24,36 @@ resource_manifest:
     data_disk_type: "pd-balanced"
     provided_by: "laboratorium (dsic-lab-infra)"
     observed:
-      captured_at_utc: "2026-10-06T07:44:08Z"
+      captured_at_utc: "2026-10-08T15:10:53Z"
       hostname: "dsic-lab-01.asia-southeast2-a.c.sigerciv1.internal"
       operating_system: "Ubuntu 24.04.5 LTS"
       cpu_count: 4
       cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz"
-      memory_total_kb: 16369284
-      memory_bytes: 16762146816
+      memory_total_kb: 16369272
+      memory_bytes: 16762134528
       memory_gib_approx: 15.61
       kernel: "7.0.0-1013-gcp"
       docker: "Docker version 29.8.2, build 7fc2dff"
       docker_compose: "Docker Compose version v5.6.0"
       data_mount: "/dev/sdb ext4"
-    per_service_limits: null
+    per_service_limits:
+      minio:
+        cpu_cores: 0.75
+        nano_cpus: 750000000
+        memory_bytes: 2147483648
+      catalog:
+        cpu_cores: 0.5
+        nano_cpus: 500000000
+        memory_bytes: 1073741824
+      spark_master:
+        cpu_cores: 0.25
+        nano_cpus: 250000000
+        memory_bytes: 1073741824
+      spark_worker:
+        cpu_cores: 1.5
+        nano_cpus: 1500000000
+        memory_bytes: 4294967296
+      driver:
+        cpu_cores: 0.5
+        memory_bytes: 2147483648
+        source: "Compose driver configuration; driver is created per run, not long-lived"

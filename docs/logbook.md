@@ -184,3 +184,28 @@ Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna.
 - **`sudo make selftest`:** belum dijalankan karena pemeriksaan `make check` gagal.
 - **Waktu stop VM:** 8 Oktober 2026, 18:52:06 WIB. Perintah `gcloud compute instances stop dsic-lab-01 --zone asia-southeast2-a --project sigerciv1` selesai; pemeriksaan status sesudahnya menunjukkan `TERMINATED`.
 - **Penurunan stack:** menurut catatan pengguna, `sudo make down` dijalankan sebelum keluar dari sesi SSH. Keluaran perintah tidak tersimpan di catatan ini.
+### Sesi VM lanjutan — 8 Oktober 2026 (validasi ulang Fase 2)
+
+- **Waktu pencatatan sebelum start:** 22:10:00 WIB (`2026-10-08 22:10:00 +07:00`).
+- **Start VM:** Perintah `gcloud compute instances start dsic-lab-01 --zone asia-southeast2-a --project sigerciv1` berhasil.
+- **Status setelah start:** `RUNNING`.
+- **Snapshot environment:** `2026-10-08T15:10:53Z` (22:10:53 WIB), dari `/var/lib/dsic-lab/environment.txt`.
+- **Hostname:** `dsic-lab-01.asia-southeast2-a.c.sigerciv1.internal`.
+- **OS / kernel:** Ubuntu 24.04.5 LTS / `7.0.0-1013-gcp`.
+- **Model CPU:** Intel(R) Xeon(R) CPU @ 2.20GHz; 4 CPU.
+- **Memori host:** 16.369.272 KB.
+- **Docker / Compose:** Docker 29.8.2 (build `7fc2dff`) / Docker Compose v5.6.0.
+- **Data mount:** `/dev/sdb ext4`; bucket korpus: `sigerciv1-dsic-2606-corpus`.
+### Tindak lanjut Fase 2 — klarifikasi digest dan hasil self-test (8 Oktober 2026)
+
+- **Klarifikasi pembimbing 1 atas selisih sebelumnya:** image MinIO terbangun dua kali. Menurut pemeriksaan lab, manifest image dan SHA-256 biner MinIO sama; ID image berbeda karena memuat catatan waktu build. `environment.lock.txt` sebelumnya merekam ID dari image pertama, yang sudah tidak ada setelah kontainernya dihapus. Lab merekam ulang berkas kunci dan mengujinya setelah VM dimatikan lalu dinyalakan kembali. Catatan kegagalan awal di atas dipertahankan sebagai riwayat; klarifikasi ini merupakan tindak lanjutnya.
+- **Identitas isi MinIO untuk pelaporan:** commit sumber `0d7408fc9969caf07de6a8c3a84f9fbb10a6739e`; SHA-256 biner `/out/minio`: `b8f3ba2fe46a637f962cfc5c2232b56590924fee94e3388bc0ead60a281204cb`. Mengikuti arahan Pak Dika, identitas isi dilaporkan dengan commit sumber dan hash biner, bukan ID image.
+- **Perintah self-test:** `sudo make selftest` di `/data/lab/dsic-lab-stack/`.
+- **Hasil:** `SELFTEST: lulus=27 gagal=0`.
+- **Cakupan yang dilaporkan lulus:** pemeriksaan awal/reset dan preflight; deteksi selisih batas memori worker; deteksi objek/checkpoint/entri katalog tersisa; pemeriksaan multipart; penolakan korpus yang diubah pada salinan; perilaku checkpoint ephemeral dan persistent; harness SIGKILL; smoke test saat MinIO mati; serta kecocokan lock setelah kontainer dibuat ulang dan pada keadaan akhir.
+- **T2 — Uji negatif reset:** `verify-only` menolak sisa satu objek MinIO, sisa checkpoint persistent, dan satu entri katalog; reset penuh setelahnya lulus membersihkan keadaan uji.
+- **T3 — Pemeriksa multipart/ETag:** tanpa objek, pemeriksa tidak menyatakan lulus (kode 2); objek single-part 3.520.800 byte lulus; objek uji multipart 6 MiB terdeteksi di `_uji_instrumen/multipart.bin` dengan ETag `"7d368e72ecdd3ff1d9b28f29481a125f-2"`.
+- **T4 — Uji negatif preflight pada salinan:** salinan utuh lulus; penambahan satu byte ke `20260924_133000.WAV` ditolak karena hash berbeda; penambahan berkas WAV asing ditolak karena jumlah berkas tidak cocok dengan `corpus.sha256`.
+- **Batas uji:** perubahan korpus dilakukan pada salinan dan unggahan multipart memakai objek uji instrumen, bukan WAV korpus eksperimen.
+- **Pemeriksaan lock di dalam self-test:** T0b dan T8b lulus; T9 juga menyatakan `down lalu up: check tetap lulus`.
+- **Makna cakupan:** ini validasi instrumen dan lingkungan Fase 2. Self-test bukan eksekusi perlakuan penelitian B0/B1 pada korpus eksperimen.

@@ -1,5 +1,19 @@
 checkpoint:
-  persistent_root: null
+  persistent_root: "/checkpoints/persistent"
+  ephemeral_root: "/checkpoints/ephemeral"
   location_template: "{persistent_root}/{run_id}/{treatment}"
   required_survival: "driver_process_restart"
-  status: "pending_runtime_storage_selection"
+  storage:
+    persistent:
+      backing: "VM disk bind mount"
+      compose_mount: '${STATE_DIR}/checkpoints:/checkpoints/persistent'
+    ephemeral:
+      backing: "container tmpfs"
+      mount: "/checkpoints/ephemeral"
+      survival: "container_lifetime_only"
+  verification_evidence:
+    persistent_marker_survived_new_driver_container: true
+    ephemeral_marker_missing_in_new_driver_container: true
+    ephemeral_mount_type: "tmpfs"
+    selftest_cases: "T5a-T5c"
+  status: "verified_from_compose_and_selftest"

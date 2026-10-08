@@ -1,9 +1,21 @@
 environment:
   multipart:
-    status: "pending_uploader_and_experiment_environment"
-    upload_client: null
-    client_version: null
-    threshold_bytes: null
-    part_size_bytes: null
-    threshold_comparison: null
-    verification_evidence: null
+    status: "verified_test_profile; experimental_corpus_ingestion_not_run"
+    upload_client: "boto3 S3 client using upload_fileobj and TransferConfig"
+    client_version: "boto3==1.35.36"
+    threshold_bytes: 5242880
+    part_size_bytes: 5242880
+    threshold_comparison: "multipart test: 6 MiB payload with 5 MiB multipart_threshold; equality boundary was not tested"
+    verification_evidence:
+      source: "/data/lab/dsic-lab-stack/scripts/minio_buckets.py"
+      selftest_cases: "T3b single-part 3,520,800-byte object; T3c multipart 6 MiB object detected"
+      multipart_test_object_key: "_uji_instrumen/multipart.bin"
+      multipart_test_etag: "7d368e72ecdd3ff1d9b28f29481a125f-2"
+    test_profiles:
+      single_part:
+        payload_bytes: 3520800
+        multipart_threshold_bytes: 67108864
+      multipart:
+        payload_bytes: 6291456
+        multipart_threshold_bytes: 5242880
+        multipart_chunksize_bytes: 5242880

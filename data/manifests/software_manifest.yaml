@@ -8,27 +8,49 @@ software_manifest:
     docker_client: "29.4.2"
     docker_engine: "29.4.2"
     docker_engine_platform: "linux/amd64"
-
-  candidate_images_not_yet_verified_as_experiment_runtime:
-    - name: "bigdata-spark"
-      tag: "latest"
-      digest: "sha256:96d8d58cc24e5558c2bd74feb556c285ede863405ad0d42c8d32a8ff7672a79e"
-      status: "available_locally_not_running"
-    - name: "minio/minio"
-      tag: "latest"
-      digest: "sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e"
-      status: "available_locally_not_running"
-    - name: "trinodb/trino"
-      tag: "latest"
-      digest: "sha256:5b5e0a97f599a30a2e23c7c7061e4e4d546a914b4fad2a2a002998140ceb4006"
-      status: "available_locally_not_running"
-      role: "optional audit; include in experiment only if selected"
+    note: "Development host only; not the experiment runtime."
 
   experiment_runtime:
-    status: "pending_cloud_and_runtime_verification"
-    spark_version: null
-    minio_version: null
-    iceberg_runtime_version: null
-    trino_version: null
-    image_digests_used: null
-
+    status: "verified"
+    evidence:
+      source: "/data/lab/dsic-lab-stack/environment.lock.txt"
+      verification: "sudo make selftest: SELFTEST lulus=27 gagal=0"
+      captured_on: "2026-10-08"
+    docker:
+      server_version: "29.8.2"
+      platform: "linux/amd64"
+      compose_version: "5.6.0"
+    images:
+      minio:
+        reference: "dsic-lab/minio:RELEASE.2025-04-22T22-12-26Z"
+        runtime_image_id: "sha256:26ae83b1a100a05d93b1ea33ae59a8526ac5ac91857fbc3b8e7f14422bf3d770"
+        rootfs_layers_sha256: "7e28a45e4876a0a1d1db1d5f0f6eed0a2a00a2cfe248ff215dfaf55825741335"
+        source_release: "RELEASE.2025-04-22T22-12-26Z"
+        source_commit: "0d7408fc9969caf07de6a8c3a84f9fbb10a6739e"
+        binary_sha256: "b8f3ba2fe46a637f962cfc5c2232b56590924fee94e3388bc0ead60a281204cb"
+        go_version: "1.24.13 linux/amd64"
+        reporting_identity: "source_commit_and_binary_sha256"
+      catalog:
+        reference: "postgres:16.4@sha256:e62fbf9d3e2b49816a32c400ed2dba83e3b361e6833e624024309c35d334b412"
+        runtime_image_id: "sha256:e62fbf9d3e2b49816a32c400ed2dba83e3b361e6833e624024309c35d334b412"
+        rootfs_layers_sha256: "db11059334d10e56435b06f4a583eb5b1622604fffe020d7ea0d015502f72dc7"
+        postgres_version: "16.4 (Debian 16.4-1.pgdg120+2)"
+      spark:
+        reference: "dsic-lab/spark:3.5.3-iceberg1.6.1"
+        runtime_image_id: "sha256:1586b9f3e11438c9b989c52423f2d9d2b1ff50cc1f64d681adff446975b7bb4a"
+        rootfs_layers_sha256: "4ec0384292f60533b5ed95680d48b3755df2afd841cd8f32e0c0ef0560160510"
+        spark_version: "3.5.3"
+        iceberg_version: "1.6.1"
+    runtimes:
+      java: "OpenJDK 17.0.12"
+      python: "3.10.12"
+      boto3: "1.35.36"
+      botocore: "1.35.99"
+      pyyaml: "6.0.2"
+    jars:
+      iceberg_aws_bundle_1_6_1:
+        sha256: "d14a49ced66a20cbd30f73ebb379646248d784fc5cd49d7295d36524380330e3"
+      iceberg_spark_runtime_3_5_2_12_1_6_1:
+        sha256: "87e7184f31ef0caac415bbdfcf1bc4943346a58b98d747dc83434f7139e12acb"
+      postgresql_42_7_4:
+        sha256: "188976721ead8e8627eb6d8389d500dccc0c9bebd885268a3047180274a6031e"
