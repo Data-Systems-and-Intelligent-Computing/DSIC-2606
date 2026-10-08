@@ -156,4 +156,19 @@ Ran 9 tests in 0.180s
 OK
 ```
 
-Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna; tidak ada test yang dijalankan oleh Codex.
+Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna.
+
+
+## Penggunaan VM — 8 Oktober 2026 (persiapan Fase 2)
+
+- **Pemeriksaan sebelum start:** Pada 16:45:38 WIB, status VM tercatat `TERMINATED`.
+- **Start VM:** Perintah `gcloud compute instances start dsic-lab-01 --zone asia-southeast2-a --project sigerciv1` berhasil; pemeriksaan sesudahnya menunjukkan status `RUNNING`.
+- **Waktu start:** Waktu persis perintah start tidak tercatat. Berdasarkan pemeriksaan sebelum start dan waktu snapshot environment, start terjadi setelah 16:45:38 dan paling lambat 16:46:56 WIB. Waktu snapshot bukan waktu start yang persis.
+- **Waktu snapshot environment:** `2026-10-08T09:46:56Z` (16:46:56 WIB).
+- **Hostname:** `dsic-lab-01.asia-southeast2-a.c.sigerciv1.internal`.
+- **OS / kernel:** Ubuntu 24.04.5 LTS / `7.0.0-1013-gcp`.
+- **Model CPU:** Intel(R) Xeon(R) CPU @ 2.20GHz; 4 CPU.
+- **Memori host:** 16.369.276 KB.
+- **Docker / Compose:** Docker 29.8.2 (build `7fc2dff`) / Docker Compose v5.6.0.
+- **Aktivitas:** Menyalakan VM untuk persiapan Fase 2 dan membaca `/var/lib/dsic-lab/environment.txt`.
+- **Status instrumen lab:** Belum ada keluaran `make`; stack lab belum dijalankan pada sesi ini.
