@@ -171,4 +171,16 @@ Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna.
 - **Memori host:** 16.369.276 KB.
 - **Docker / Compose:** Docker 29.8.2 (build `7fc2dff`) / Docker Compose v5.6.0.
 - **Aktivitas:** Menyalakan VM untuk persiapan Fase 2 dan membaca `/var/lib/dsic-lab/environment.txt`.
-- **Status instrumen lab:** Belum ada keluaran `make`; stack lab belum dijalankan pada sesi ini.
+- **Status instrumen lab:** Stack lab dijalankan pada sesi ini; `sudo make up` dan `sudo make ps` berhasil. `sudo make check` menemukan selisih digest image MinIO; rinciannya dicatat pada entri pemeriksaan Fase 2 di bawah.
+## 8 Oktober 2026 — Pemeriksaan awal lingkungan Fase 2
+
+- **Lokasi:** VM `dsic-lab-01`, direktori instrumen `/data/lab/dsic-lab-stack/`.
+- **`sudo make up`:** berhasil; network Compose dibuat dan layanan MinIO, katalog, Spark master, serta Spark worker dijalankan. `minio-init` juga dijalankan.
+- **`sudo make ps`:** katalog dan MinIO berstatus `healthy`; Spark master dan worker berstatus `Up`; `minio-init` berstatus `Exited (0)` setelah tugas inisialisasi selesai.
+- **`sudo make check`:** gagal dengan kode keluar 1 karena satu selisih digest image MinIO. Keluaran membandingkan baris berikut:
+  - sisi pertama keluaran diff: `minio | dsic-lab/minio:RELEASE.2025-04-22T22-12-26Z | sha256:26ae83b1a100a05d93b1ea33ae59a8526ac5ac91857fbc3b8e7f14422bf3d770`
+  - sisi kedua keluaran diff: `minio | dsic-lab/minio:RELEASE.2025-04-22T22-12-26Z | sha256:d3af640a728fc086d56fa05829079f368c796ce08e2c207a0dfeb70c8b0aed2c`
+- **Kesimpulan sementara:** layanan berhasil menyala, tetapi kesamaan lingkungan dengan `environment.lock.txt` belum terverifikasi karena digest MinIO berbeda. Nilai tidak diubah manual; tindak lanjut menunggu arahan pembimbing.
+- **`sudo make selftest`:** belum dijalankan karena pemeriksaan `make check` gagal.
+- **Waktu stop VM:** 8 Oktober 2026, 18:52:06 WIB. Perintah `gcloud compute instances stop dsic-lab-01 --zone asia-southeast2-a --project sigerciv1` selesai; pemeriksaan status sesudahnya menunjukkan `TERMINATED`.
+- **Penurunan stack:** menurut catatan pengguna, `sudo make down` dijalankan sebelum keluar dari sesi SSH. Keluaran perintah tidak tersimpan di catatan ini.
