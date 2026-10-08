@@ -209,3 +209,10 @@ Seluruh 9 test lulus. Hasil ini merupakan keluaran yang dilaporkan pengguna.
 - **Batas uji:** perubahan korpus dilakukan pada salinan dan unggahan multipart memakai objek uji instrumen, bukan WAV korpus eksperimen.
 - **Pemeriksaan lock di dalam self-test:** T0b dan T8b lulus; T9 juga menyatakan `down lalu up: check tetap lulus`.
 - **Makna cakupan:** ini validasi instrumen dan lingkungan Fase 2. Self-test bukan eksekusi perlakuan penelitian B0/B1 pada korpus eksperimen.
+
+### Pengakhiran sesi validasi Fase 2 — 9 Oktober 2026
+
+- **Hasil self-test sesi:** `SELFTEST: lulus=27 gagal=0`.
+- **Penurunan stack:** pengguna melaporkan menjalankan `sudo make down` sebelum sesi SSH tertutup, tetapi keluarannya tidak tersimpan. Karena itu, keberhasilan penurunan stack tidak dapat diverifikasi dari output perintah.
+- **Penghentian VM:** perintah `gcloud compute instances stop dsic-lab-01 --zone asia-southeast2-a --project sigerciv1` selesai.
+- **Waktu konfirmasi berhenti:** 9 Oktober 2026, 00:38:57 WIB (`2026-10-09 00:38:57 +07:00`); pemeriksaan status menampilkan `TERMINATED`. Ini waktu konfirmasi status, bukan waktu transisi VM yang persis.
