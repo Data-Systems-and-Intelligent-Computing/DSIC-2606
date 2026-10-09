@@ -29,20 +29,33 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
             if b0.get(key) != b1.get(key)
         )
         self.assertEqual(changed_keys, ["checkpoint_location"])
-        self.assertIsNone(b0["checkpoint_location"])
-        self.assertTrue(b1["checkpoint_location"])
+        self.assertIn("{ephemeral_root}", b0["checkpoint_location"])
+        self.assertIn("{persistent_root}", b1["checkpoint_location"])
 
     def test_idempotence_is_off_for_both_treatments(self):
-        self.assertFalse(self.config["common"]["idempotence_enabled"])
+        self.assertNotIn("idempotence_enabled", self.config["common"])
+        self.assertFalse(self.config["B0"]["idempotence_enabled"])
+        self.assertFalse(self.config["B1"]["idempotence_enabled"])
 
-    def test_b0_resolves_to_no_checkpoint(self):
-        self.assertIsNone(
+    def test_b0_resolves_to_ephemeral_path(self):
+        with self.assertRaises(ValueError):
             resolve_checkpoint_location(
                 self.config["B0"]["checkpoint_location"],
-                persistent_root=None,
+                persistent_root=self.checkpoint["persistent_root"],
+                ephemeral_root=None,
                 run_id="pilot-001",
                 treatment="B0",
             )
+
+        self.assertEqual(
+            resolve_checkpoint_location(
+                self.config["B0"]["checkpoint_location"],
+                persistent_root=self.checkpoint["persistent_root"],
+                ephemeral_root=self.checkpoint["ephemeral_root"],
+                run_id="pilot-001",
+                treatment="B0",
+            ),
+            "/checkpoints/ephemeral/pilot-001/B0",
         )
 
     def test_b1_requires_a_persistent_root_and_resolves_per_run(self):
@@ -52,23 +65,23 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
             resolve_checkpoint_location(
                 template,
                 persistent_root=None,
+                ephemeral_root=self.checkpoint["ephemeral_root"],
                 run_id="pilot-001",
                 treatment="B1",
             )
 
         location = resolve_checkpoint_location(
             template,
-            persistent_root="s3a://research/checkpoints",
+            persistent_root=self.checkpoint["persistent_root"],
+            ephemeral_root=self.checkpoint["ephemeral_root"],
             run_id="pilot-001",
             treatment="B1",
         )
-        self.assertEqual(
-            location,
-            "s3a://research/checkpoints/pilot-001/B1",
-        )
+        self.assertEqual(location, "/checkpoints/persistent/pilot-001/B1")
 
-    def test_checkpoint_root_remains_pending_until_storage_is_selected(self):
-        self.assertIsNone(self.checkpoint["persistent_root"])
+    def test_checkpoint_roots_match_instrument(self):
+        self.assertEqual(self.checkpoint["persistent_root"], "/checkpoints/persistent")
+        self.assertEqual(self.checkpoint["ephemeral_root"], "/checkpoints/ephemeral")
 
 
 if __name__ == "__main__":

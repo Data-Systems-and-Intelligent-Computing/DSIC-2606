@@ -1,0 +1,15 @@
+test_recording_id_tidak_kosong_dan_unik (test_manifest_integrity.ManifestIntegrityTests) ... ok
+test_sha256_tidak_kosong_dan_formatnya_valid (test_manifest_integrity.ManifestIntegrityTests) ... ok
+test_manifest_identity_uri_dan_utc_konsisten (test_stable_recording_id.StableRecordingIdentityTests) ... ok
+test_naive_timestamp_digagalkan (test_stable_recording_id.StableRecordingIdentityTests) ... ok
+test_b0_and_b1_differ_only_by_checkpoint_location (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_b0_resolves_to_ephemeral_path (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_b1_requires_a_persistent_root_and_resolves_per_run (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_checkpoint_roots_match_instrument (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_idempotence_is_off_for_both_treatments (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.178s
+
+OK
+exit_code=0

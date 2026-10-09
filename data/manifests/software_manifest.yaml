@@ -23,6 +23,10 @@ software_manifest:
     images:
       minio:
         reference: "dsic-lab/minio:RELEASE.2025-04-22T22-12-26Z"
+        build_provenance:
+          origin: "compiled by the laboratory from source"
+          official_release_artifact_status: "unavailable to the lab at build time (2026-10-08)"
+          equivalence_to_official_release_binary: "not asserted"
         runtime_image_id: "sha256:26ae83b1a100a05d93b1ea33ae59a8526ac5ac91857fbc3b8e7f14422bf3d770"
         rootfs_layers_sha256: "7e28a45e4876a0a1d1db1d5f0f6eed0a2a00a2cfe248ff215dfaf55825741335"
         source_release: "RELEASE.2025-04-22T22-12-26Z"
