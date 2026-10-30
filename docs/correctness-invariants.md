@@ -13,6 +13,17 @@
 
 Nilai `object_uri` diambil dari kolom `expected_object_uri` pada manifes sumber. Nama kolom pada tabel tujuan adalah `object_uri`.
 
+### Asal nilai acuan
+
+`expected_metadata.csv` dibentuk dari manifes yang sudah dibekukan, sebelum pipeline ingest dijalankan. Aturannya mengikuti `configs/dataset.yaml` dan `scripts/generate_manifest.py`:
+
+- `recording_id` adalah `device_id` ditambah `_` dan stem nama WAV. Contoh: `MAIN_5JAM_20260924_133000`.
+- `start_time` adalah waktu pada nama berkas yang ditafsirkan sebagai `Asia/Jakarta`, lalu dinormalisasi ke UTC.
+- `object_uri` memakai bucket `audiomoth`, label sesi sebagai prefix, tanggal dari `start_time` UTC, dan nama berkas asli. Contoh: `s3://audiomoth/MAIN_5JAM/2026-09-24/20260924_133000.WAV`.
+- `device_id`, `file_size_bytes`, dan `sha256` disalin dari baris manifest yang sama.
+
+Skrip `scripts/validate_expected_metadata.py` membandingkan ground truth dengan manifest sumber. Untuk URI, hanya skema `s3` dan `s3a` yang dinormalisasi; bucket dan object key tetap harus sama. Untuk waktu, kedua nilai dibandingkan sebagai instant berzona waktu. Validasi ini memeriksa acuan sebelum ingest, bukan membuktikan hasil pipeline.
+
 ### Pencocokan sama persis
 
 Kolom berikut harus sama persis dengan nilai acuan:

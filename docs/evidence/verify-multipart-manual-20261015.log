@@ -1,0 +1,5 @@
+docker compose --env-file versions.env --env-file .env run --rm --no-deps -T --entrypoint python3 minio-init /opt/lab/scripts/minio_buckets.py multipart
+ Container dsic2606-minio-init-run-b03d7ca649df Creating 
+ Container dsic2606-minio-init-run-b03d7ca649df Created 
+objek diperiksa: 300
+objek multipart: 0 (harus 0)

@@ -1,6 +1,6 @@
 # Laporan Korpus Eksperimen — Fase 1
 
-**Status: Sedang ditinjau.** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di VM, uji negatif verifier, checksum korpus, serta metadata acuan. Status tetap ditinjau sampai seluruh artefak Fase 1 diperiksa dan commit final dicatat.
+**Status korpus: Beku.** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di Lightsail, uji negatif verifier, checksum korpus, serta metadata acuan. Status ini menyatakan bahwa seleksi dan isi subset telah dibekukan; Gate Minggu 1 secara keseluruhan masih menunggu penyelesaian bukti implementasi B0/B1 dan commit final.
 
 ## Ruang Lingkup
 
@@ -17,6 +17,28 @@ Eksperimen utama bulan pertama menggunakan subset korpus Main (`MAIN_5JAM`). Kan
 | Distribusi ukuran | 300 × 3.520.800 byte; 1 × 488 byte | 300 × 3.520.800 byte |
 | Rentang timestamp mulai (UTC) | 2026-09-24 06:30–11:32:32 (termasuk file 488 byte) | 2026-09-24 06:30–11:29 |
 | Jumlah batch | — | 30 batch × 10 rekaman |
+
+### Perhitungan ringkasan dari skrip
+
+Pada 30 Oktober 2026, pengguna menjalankan `python scripts/corpus_report.py` dari PowerShell di akar repo. Skrip membaca manifest Main, batch order, empat salinan `CONFIG.TXT`, dan folder sumber raw lokal bila tersedia. Keluaran yang dilaporkan:
+
+```text
+Korpus eksperimen Main (dari manifest):
+  jumlah berkas       : 300
+  total byte          : 1,056,240,000
+  perangkat fisik     : 1 (Device ID unik dari CONFIG.TXT)
+  rentang waktu UTC   : 2026-09-24T06:30:00Z s.d. 2026-09-24T11:29:00Z
+  jumlah batch beku   : 30
+  distribusi ukuran   : 3,520,800 byte: 300 file
+  ukuran tiap batch   : 30 batch x 10 recording_id
+Korpus sumber mentah (dari folder raw, termasuk file yang dikecualikan):
+  jumlah berkas       : 301
+  total byte          : 1,056,240,488
+  rentang waktu UTC   : 2026-09-24T06:30:00Z s.d. 2026-09-24T11:32:32Z
+  distribusi ukuran   : 488 byte: 1 file; 3,520,800 byte: 300 file
+```
+
+Hasil skrip sesuai dengan angka subset dan sumber mentah pada tabel di atas. Jumlah perangkat fisik berasal dari Device ID unik pada `CONFIG.TXT`, bukan dari label sesi `device_id` di manifest.
 
 File `20260924_183232.WAV` (488 byte) dikecualikan dari subset karena ukurannya berbeda dari ukuran modal. File mentahnya tetap disimpan; pada VM file ini dipisahkan dari `/data/corpus/main` ke `/data/corpus/dikeluarkan/`. Karena itu angka sumber mentah (301 file) dan subset eksperimen (300 file) memang berbeda.
 
@@ -78,4 +100,4 @@ Pada 7 Oktober 2026, perintah `python -m unittest discover -s tests -v` melapork
 - Pastikan `corpus.sha256`, empat salinan `CONFIG.TXT`, skema, expected metadata, manifest, batch order, laporan, dan logbook masuk ke commit yang sama.
 - Hasil pembuatan expected metadata, provenance perangkat, dan konfirmasi status VM `TERMINATED` pada 2026-10-07 01:25:22 +07:00 telah dicatat di logbook.
 - Catat hash commit final saat mengirim bukti Fase 1 kepada pembimbing.
-- Pertahankan status laporan **Sedang ditinjau** sampai pemeriksaan akhir Fase 1 selesai.
+- Status korpus pada laporan telah ditetapkan **Beku** setelah ringkasan skrip dan pemeriksaan korpus Lightsail cocok dengan nilai acuan. Gate Minggu 1 belum dinyatakan selesai; bukti implementasi dan eksekusi B0/B1 serta hash commit final masih diperlukan.

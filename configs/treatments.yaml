@@ -1,8 +1,4 @@
 treatments:
-  common:
-    ordering_rule: "sorted_by_recording_id_ascending"
-    batch_size: 10
-
   B0:
     idempotence_enabled: false
     checkpoint_location: "{ephemeral_root}/{run_id}/{treatment}"

@@ -14,6 +14,8 @@ B0 adalah baseline at-least-once tanpa perlindungan idempotence. Istilah **OFF**
 
 Dengan akar instrumen `/checkpoints/ephemeral`, contoh path untuk `pilot-001` adalah `/checkpoints/ephemeral/pilot-001/B0`. Akar ini memakai `tmpfs` milik kontainer. Isinya hilang ketika kontainer driver dihapus.
 
+B0 dirancang sebagai baseline yang masuk akal: aplikasi melakukan penulisan objek dan metadata seperti alur ingest biasa, lalu mengandalkan progres checkpoint Spark tanpa menambahkan perlindungan idempotence di tingkat aplikasi. Ini bukan baseline yang sengaja merusak atau melemahkan data. B1 memakai alur dan perilaku penulisan yang sama; perbedaan treatment hanya lokasi checkpoint, sementara B0 menaruh checkpoint pada penyimpanan sementara.
+
 ## B1: checkpoint persisten
 
 B1 memakai template path per-run yang sama, tetapi di bawah akar persisten:

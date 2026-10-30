@@ -20,9 +20,8 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
             cls.checkpoint = yaml.safe_load(stream)["checkpoint"]
 
     def test_b0_and_b1_differ_only_by_checkpoint_location(self):
-        common = self.config["common"]
-        b0 = {**common, **self.config["B0"]}
-        b1 = {**common, **self.config["B1"]}
+        b0 = dict(self.config["B0"])
+        b1 = dict(self.config["B1"])
 
         changed_keys = sorted(
             key for key in set(b0) | set(b1)
@@ -33,7 +32,6 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
         self.assertIn("{persistent_root}", b1["checkpoint_location"])
 
     def test_idempotence_is_off_for_both_treatments(self):
-        self.assertNotIn("idempotence_enabled", self.config["common"])
         self.assertFalse(self.config["B0"]["idempotence_enabled"])
         self.assertFalse(self.config["B1"]["idempotence_enabled"])
 

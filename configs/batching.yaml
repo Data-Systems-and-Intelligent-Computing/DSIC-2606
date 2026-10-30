@@ -4,7 +4,7 @@ batching:
   corpora:
     main:
       manifest: "data/manifests/manifest_main.csv"
-      total_files: 301
+      total_files: 300
     kantin:
       manifest: "data/manifests/manifest_kantin.csv"
       total_files: 121
