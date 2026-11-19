@@ -1,0 +1,14 @@
+Checkpoint B1 setelah restart
+total 28
+drwxr-xr-x 5 185 185 4096 Nov 19 20:44 .
+drwxr-xr-x 3 185 185 4096 Nov 19 20:44 ..
+-rw-r--r-- 1 185 185   12 Nov 19 20:44 .metadata.crc
+drwxr-xr-x 2 185 185 4096 Nov 19 20:48 commits
+-rw-r--r-- 1 185 185   45 Nov 19 20:44 metadata
+drwxr-xr-x 2 185 185 4096 Nov 19 20:48 offsets
+drwxr-xr-x 3 185 185 4096 Nov 19 20:44 sources
+Jumlah commit bernomor:
+30
+Hasil restart:
+2026-11-19 20:55:47,489 INFO dsic.ingestion F0_RECONCILIATION objects=300 metadata_rows=300 distinct_recording_ids=300 object_head_checks=300
+2026-11-19 20:55:47,489 INFO dsic.ingestion INGESTION_FINISHED treatment=B1 run_id=b1-f0-20261120 batches=30

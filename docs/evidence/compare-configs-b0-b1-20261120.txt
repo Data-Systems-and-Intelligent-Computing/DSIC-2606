@@ -1,0 +1,2 @@
+B0/B1 effective configuration: COCOK
+Kunci berbeda: checkpoint_location

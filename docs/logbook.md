@@ -463,3 +463,28 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Feeder:** waktu modifikasi event landing dibuat meningkat sesuai nomor publikasi, supaya event yang menumpuk saat driver berhenti tetap disajikan sesuai urutan oleh sumber file Spark.
 - **Test lokal:** `python -m unittest discover tests -v` lulus, 28 test, 0 gagal. Keluaran aktual disimpan di `docs/evidence/unittest-20261120-ingestion.txt`. Pemeriksaan sintaks Python dan `git diff --check` juga lulus.
 - **Batas bukti:** ini baru validasi lokal. Boto3 MinIO dan Iceberg belum dijalankan lewat kontainer Spark di Lightsail; belum ada hasil B0/F0 atau B1/F0. Tabel serta bucket harus dimulai kosong sesuai preflight/reset lab sebelum pilot, dan keadaan lock harus diperiksa lebih dahulu.
+
+### Pilot B0/F0 pada Lightsail — 19–20 November 2026
+
+- **Commit yang dijalankan:** `392893d` (`feat: implement B0 B1 ingestion pipeline`), ditarik di VM sebelum pilot.
+- **Run:** `TREATMENT=B0`, `FAULT=F0`, `RUN_ID=b0-f0-20261120`; kode keluar 0.
+- **Konfigurasi efektif:** checkpoint `/checkpoints/ephemeral/b0-f0-20261120/B0`; `maxFilesPerTrigger=1`; 30 event × 10 ID; metadata Iceberg di `lab.main.recordings`; idempotence `false`.
+- **Hasil rekonsiliasi:** 300 objek, 300 baris metadata, 300 ID rekaman unik, dan 300 pemeriksaan HEAD ukuran serta metadata SHA-256 lulus.
+- **Urutan replay:** pemeriksa mencocokkan 30 batch × 10 ID dengan `batch_order_main.csv`.
+- **Multipart:** 300 objek diperiksa; 0 objek multipart. Klien pipeline boto3 1.35.36 dari image Spark; ambang dan ukuran part 5 MiB.
+- **ETag:** daftar 300 rekaman unik tersimpan di `docs/evidence/etags-b0-f0-20261120.tsv`. Keluaran mentah disimpan bersama log run, hasil pemeriksaan batch, dan hasil multipart di `docs/evidence/`.
+- **CPU sesi VM:** `Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz`; dikonfirmasi dengan `lscpu` pada 2026-11-19 20:40:39 UTC. Waktu boot `2026-10-17 14:19:30 UTC`, sebelum eksekusi B0.
+- **Status Fase 3:** B0/F0 berhasil. B1/F0, perbandingan konfigurasi efektif dua run, dan bukti perilaku checkpoint setelah restart masih harus dikerjakan.
+
+### Pilot B1/F0 dan restart checkpoint — 19–20 November 2026
+
+- **Commit yang dijalankan:** `392893d`, sama dengan commit B0/F0.
+- **Run:** `TREATMENT=B1`, `FAULT=F0`, `RUN_ID=b1-f0-20261120`; kode keluar 0.
+- **Hasil rekonsiliasi:** 300 objek, 300 baris metadata, 300 recording ID unik, dan 300 pemeriksaan HEAD ukuran serta metadata SHA-256 lulus.
+- **Urutan replay:** 30 batch × 10 ID cocok dengan `batch_order_main.csv`.
+- **Multipart:** 300 objek diperiksa; 0 multipart.
+- **Perbandingan konfigurasi efektif:** pemeriksa menyatakan `COCOK`; satu-satunya kunci yang berbeda antara B0 dan B1 adalah `checkpoint_location`.
+- **Restart B1:** driver baru dijalankan kembali dengan run ID yang sama; kode keluar 0 dan rekonsiliasi tetap 300 objek/300 baris metadata. Direktori checkpoint persisten masih berisi `metadata`, `sources`, `offsets`, dan 30 commit bernomor.
+- **CPU sesi:** `Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz`, diperiksa dengan `lscpu`; VM boot `2026-10-17 14:19:30 UTC`, sebelum run B0 dan B1.
+- **Bukti mentah dan ringkasan:** disimpan di `docs/evidence/b1-f0-20261120.md` beserta log run, log restart, inventaris checkpoint, hasil pembanding konfigurasi, validasi batch, dan multipart.
+- **Status Fase 3:** F0 B0/B1, kecocokan batch, konfigurasi efektif, multipart, dan daya tahan checkpoint B1 telah dibuktikan. Bukti eksplisit restart B0/checkpoint ephemeral masih perlu dipastikan.
