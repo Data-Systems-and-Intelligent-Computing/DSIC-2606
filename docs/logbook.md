@@ -414,3 +414,42 @@ Ran 12 tests in 0.541s
 
 OK
 ```
+
+### Rancangan perilaku F2 sebelum pilot — 2 November 2026
+
+Catatan ini adalah prediksi sebelum uji, bukan hasil eksekusi. F2 adalah skenario ketika driver dihentikan pada titik kegagalan yang ditentukan, lalu pipeline dijalankan kembali untuk mengamati pemulihannya. Perilaku yang diperkirakan dicatat sebelum uji supaya hasil pilot dapat dibandingkan dengan prediksi, bukan dijelaskan setelah melihat hasil.
+
+- **Landing replay:** pembimbing menetapkan akar disk host `/data/state/replay`, dipasang pada `/data/replay` di driver dengan akses baca-tulis dan di Spark worker hanya-baca. Setiap run memakai subfolder `/data/replay/<run_id>/`. Berkas event yang sudah dipublikasikan tetap berada di disk ketika kontainer driver berhenti. Mount ini masih menunggu pemasangan pembimbing; belum diverifikasi pada worker.
+- **Aturan feeder setelah restart:** feeder memeriksa urutan berkas event yang sudah ada di landing. Jika berkas yang sudah dipublikasikan berurutan dari `event-000.json` sampai `event-k.json`, feeder tidak menyalinnya ulang dan melanjutkan publikasi dari `event-(k+1).json` setelah pemrosesan event tertunda dikenali selesai oleh Spark. Aturan feeder yang sama berlaku untuk B0 dan B1; tidak ada percabangan berdasarkan nama treatment.
+- **Prediksi B0:** checkpoint berada di penyimpanan ephemeral dan hilang bersama kontainer driver. Berkas event lama tetap ada di landing, tetapi driver baru tidak memiliki progres checkpoint lama. Karena itu Spark dapat membaca ulang event yang masih tertinggal di landing. Dengan idempotence dimatikan, pemrosesan ulang dapat menambah baris metadata lagi; hal ini akan diperiksa, bukan diasumsikan sebagai hasil.
+- **Prediksi B1:** checkpoint persisten tetap ada. Driver baru memakai checkpoint untuk menentukan progres stream dan melanjutkan dari progres yang tercatat. Event yang sudah ada di landing tetapi belum tercatat dalam progres checkpoint masih dapat dibaca ulang.
+- **Batas bukti:** belum ada kegagalan F2 atau pemulihan yang dijalankan. Perbedaan B0/B1 di atas adalah prediksi berdasarkan daya tahan checkpoint; keluaran pilot dan jumlah duplikasi akan dicatat terpisah setelah pengujian.
+
+### Pemeriksaan mount replay dan feeder lokal — 19–20 November 2026
+
+Pada 19 November, setelah pembimbing menyatakan mount sudah disesuaikan, pemeriksaan dari Lightsail menunjukkan:
+
+```text
+dsic-lab-lock --status
+bebas
+
+./scripts/capture_env.sh --check
+lingkungan sama dengan environment.lock.txt
+
+/data/corpus/main -> /data/raw rw=false
+/data/state/replay -> /data/replay rw=false
+
+sha256sum environment.lock.txt
+0b9e90778b884cba71efe1fd2c91110e6fe65bf69bfad90dd7362e2fb5686c12  environment.lock.txt
+```
+
+Konfigurasi Compose yang diperiksa memasang `/data/state/replay` ke `/data/replay` secara read-only pada worker dan read-write pada driver. Repo VM berada pada `f8ba12c`, sama dengan `origin/main`; masih ada berkas lokal tak terlacak `verify_corpus.py`, yang tidak dimasukkan ke commit ini. Pemeriksaan ini membuktikan kesiapan mount dan lock, bukan eksekusi replay Spark.
+
+Pada 20 November, ditambahkan uji unit lokal untuk feeder replay: penerbitan event berikutnya hanya setelah batch selesai, pelestarian event saat objek feeder dibuat ulang, serta penolakan event bernomor bolong atau berisi jumlah ID yang salah. Seluruh suite lokal dijalankan:
+
+```text
+Ran 16 tests in 1.215s
+OK
+```
+
+Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Hasil ini menguji logika feeder secara lokal; feeder belum terhubung ke `microbatch.py`, belum dijalankan pada worker Spark Lightsail, dan belum ada run B0/F0 atau B1/F0.
