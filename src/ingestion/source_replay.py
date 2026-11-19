@@ -18,6 +18,7 @@ import json
 import os
 import re
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Sequence
@@ -200,6 +201,16 @@ class ReplayFeeder:
                 stream.write(event.content)
                 stream.flush()
                 os.fsync(stream.fileno())
+            # Files can accumulate in landing if a driver dies. Keep mtime
+            # strictly increasing by event publication order so Spark's file
+            # source also replays the frozen sequence after B0 restarts.
+            previous_mtimes = [
+                path.stat().st_mtime_ns
+                for path in self.landing.glob("event-*.json")
+                if path.is_file()
+            ]
+            publication_ns = max(time.time_ns(), max(previous_mtimes, default=0) + 1_000_000_000)
+            os.utime(temporary_path, ns=(publication_ns, publication_ns))
             # Spark's worker needs read permission; the lab containers use a
             # shared read-only mount for the worker.
             temporary_path.chmod(0o644)

@@ -67,6 +67,17 @@ class ReplayFeederTests(unittest.TestCase):
             ["event-000.json", "event-001.json", "event-002.json"],
         )
 
+    def test_published_event_mtimes_increase_with_batch_order(self):
+        feeder = self._feeder()
+        feeder.publish_initial()
+        feeder.after_batch_completed(0)
+        feeder.after_batch_completed(1)
+
+        paths = [feeder.landing / f"event-{batch_id:03d}.json" for batch_id in range(3)]
+        mtimes = [path.stat().st_mtime_ns for path in paths]
+        self.assertEqual(mtimes, sorted(mtimes))
+        self.assertEqual(len(set(mtimes)), len(mtimes))
+
     def test_rejects_a_gap_in_source_event_numbers(self):
         (self.source / "event-001.json").unlink()
         with self.assertRaisesRegex(ValueError, "contiguous"):

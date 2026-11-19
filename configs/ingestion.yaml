@@ -1,0 +1,26 @@
+ingestion:
+  metadata_table: "lab.main.recordings"
+  metadata_schema_version: 1
+  behavior: "append_only_at_least_once"
+  object_put:
+    client: "boto3 S3 client upload_file with TransferConfig"
+    client_version: "1.35.36 from the locked Spark image"
+    multipart_threshold_bytes: 5242880
+    multipart_part_size_bytes: 5242880
+    expected_main_object_size_bytes: 3520800
+    expected_multipart_result_for_main_wav: false
+    source_root_environment: "CORPUS_ROOT"
+    source_root_default: "/data/raw"
+    target_from_manifest_column: "expected_object_uri"
+    verify_source_sha256_before_put: true
+    verify_uploaded_size_and_sha256_metadata: true
+  metadata_commit:
+    rows_per_commit: 1
+    commit_boundary: "Iceberg append returns successfully after the corresponding WAV PUT is confirmed"
+  replay:
+    event_source: "data/replay/main/events"
+    landing_root_environment: "REPLAY_LANDING_ROOT"
+    max_files_per_trigger: 1
+    batches: 30
+    recordings_per_batch: 10
+  status: "implementation_ready_for_lab_pilot; Spark F0 not yet run"

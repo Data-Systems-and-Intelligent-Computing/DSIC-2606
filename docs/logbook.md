@@ -452,4 +452,14 @@ Ran 16 tests in 1.215s
 OK
 ```
 
-Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Hasil ini menguji logika feeder secara lokal; feeder belum terhubung ke `microbatch.py`, belum dijalankan pada worker Spark Lightsail, dan belum ada run B0/F0 atau B1/F0.
+Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik catatan ini, feeder belum terhubung ke `microbatch.py`; sambungan dan pipeline awal dicatat pada entri implementasi setelah ini. Belum ada run B0/F0 atau B1/F0.
+
+### Implementasi awal alur ingest B0/B1 — 20 November 2026
+
+- **Perubahan lokal:** `microbatch.py` kini membaca 30 event dan memvalidasi urutan serta 10 ID tiap event terhadap `batch_order_main.csv`. Feeder menerbitkan event berikutnya setelah micro-batch sebelumnya selesai dan checkpoint Spark tercatat.
+- **Urutan penulisan per rekaman:** berkas sumber di `/data/raw` diverifikasi ukuran dan SHA-256-nya, lalu pipeline melakukan PUT ke bucket/key dari `expected_object_uri`, memakai boto3 1.35.36 dari image Spark dengan ambang dan ukuran part 5 MiB. PUT dianggap terkonfirmasi sesudah `upload_file` berhasil dan `HEAD` memeriksa ukuran serta metadata SHA-256. Sesudah itu satu baris metadata ditambahkan ke Iceberg; kembalinya `.append()` menandai batas commit. Keduanya punya catatan log terpisah.
+- **Tabel metadata:** `lab.main.recordings` ditetapkan sebagai tabel eksperimen di `configs/ingestion.yaml`; `lab.smoke.t` tetap hanya tabel smoke test instrumen.
+- **Pemeriksaan F0 yang disiapkan:** setelah 30 micro-batch, kode memeriksa 300 baris metadata unik yang cocok dengan manifest dan 300 object key yang cocok dengan URI manifest.
+- **Feeder:** waktu modifikasi event landing dibuat meningkat sesuai nomor publikasi, supaya event yang menumpuk saat driver berhenti tetap disajikan sesuai urutan oleh sumber file Spark.
+- **Test lokal:** `python -m unittest discover tests -v` lulus, 28 test, 0 gagal. Keluaran aktual disimpan di `docs/evidence/unittest-20261120-ingestion.txt`. Pemeriksaan sintaks Python dan `git diff --check` juga lulus.
+- **Batas bukti:** ini baru validasi lokal. Boto3 MinIO dan Iceberg belum dijalankan lewat kontainer Spark di Lightsail; belum ada hasil B0/F0 atau B1/F0. Tabel serta bucket harus dimulai kosong sesuai preflight/reset lab sebelum pilot, dan keadaan lock harus diperiksa lebih dahulu.
