@@ -551,3 +551,10 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **B2/F0 di Lightsail:** `RUN_ID=b2-f0-20261120`, kode keluar 0. Log konfigurasi efektif mencatat `idempotence_enabled=true`, checkpoint ephemeral, `maxFilesPerTrigger=1`, dan 30 batch. Guard mencatat 300 keputusan `PUT`, 0 `SUDAH ADA`; terdapat 300 upsert metadata. Rekonsiliasi melaporkan 300 objek, 300 baris metadata, 300 ID unik, dan 300 pemeriksaan HEAD. Pemeriksa batch menyatakan 30 batch × 10 ID cocok dengan `batch_order_main.csv`. Pemeriksaan multipart menemukan 300 objek dan 0 multipart.
 - **Bukti mentah:** log B2/F0, hasil pemeriksaan batch, dan multipart tersedia di `docs/evidence/b2-f0-20261120.log`, `verify-batches-b2-f0-20261120.txt`, serta `verify-multipart-b2-f0-20261120.log`.
 - **Batas bukti:** uji sink dan F0 B2 berhasil, tetapi belum membuktikan perilaku B2 saat fault/restart atau hasil P1. Fase 4 masih berlanjut ke pengujian fault yang ditetapkan protokol; jangan menyimpulkan hasil hipotesis sebelum pengujian itu selesai.
+
+### Hari 9 — Konfigurasi treatment P1 — 20 November 2026
+
+- **Perubahan:** P1 ditambahkan sebagai kombinasi `idempotence_enabled: true` dan checkpoint persistent per-run. Kode ingest yang sama menangani B2/P1; pemilihan treatment tetap melalui konfigurasi, tanpa cabang nama treatment.
+- **Audit pemisahan konfigurasi:** test kini membuktikan B0/B1 hanya berbeda pada checkpoint, B0/B2 dan B1/P1 hanya berbeda pada idempotence, serta B2/P1 hanya berbeda pada checkpoint.
+- **Test lokal:** `python -m unittest discover tests -v` lulus: 45 test, 0 gagal, kode keluar 0. Keluaran aktual tersimpan di `docs/evidence/unittest-20261120-p1-local.txt`.
+- **Batas bukti:** konfigurasi dan isolasi P1 baru diverifikasi secara lokal. P1 belum dijalankan di Lightsail; F0 P1 dan fault/restart B2/P1 masih harus diuji.

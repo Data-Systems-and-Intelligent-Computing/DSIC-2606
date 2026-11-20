@@ -17,4 +17,4 @@ B0 dan B1 sama-sama tidak memeriksa apakah objek atau baris metadata sudah perna
 
 ## Batas bukti saat ini
 
-Implementasi B0/B1 dan F0/restart-nya telah dibuktikan di Lightsail, dengan bukti pada `docs/evidence/`. Kode B2 saat ini baru melewati test lokal; belum ada bukti Spark/MinIO/Iceberg untuk guard objek, MERGE metadata, atau F0 B2. Label hasil B2, hitungan 300/300, dan perilaku setelah restart harus dibuktikan dari log eksekusi VM.
+Implementasi B0/B1 dan F0/restart-nya telah dibuktikan di Lightsail. Guard sink idempotent juga diuji pada objek/tabel probe, lalu B2/F0 berjalan dengan 300 objek, 300 baris metadata, dan 30 batch yang cocok. Bukti tersedia di `docs/evidence/`. Perilaku B2 pada fault/restart dan hasil P1 masih harus diuji dari log eksekusi VM.

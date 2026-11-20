@@ -39,6 +39,30 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
         self.assertTrue(self.config["B2"]["idempotence_enabled"])
         self.assertIn("{ephemeral_root}", self.config["B2"]["checkpoint_location"])
 
+    def test_p1_enables_idempotence_and_uses_persistent_checkpoint(self):
+        self.assertTrue(self.config["P1"]["idempotence_enabled"])
+        self.assertIn("{persistent_root}", self.config["P1"]["checkpoint_location"])
+
+    def test_b0_and_b2_differ_only_by_idempotence(self):
+        b0 = dict(self.config["B0"])
+        b2 = dict(self.config["B2"])
+        changed_keys = sorted(key for key in set(b0) | set(b2) if b0.get(key) != b2.get(key))
+        self.assertEqual(changed_keys, ["idempotence_enabled"])
+
+    def test_b1_and_p1_differ_only_by_idempotence(self):
+        b1 = dict(self.config["B1"])
+        p1 = dict(self.config["P1"])
+        changed_keys = sorted(key for key in set(b1) | set(p1) if b1.get(key) != p1.get(key))
+        self.assertEqual(changed_keys, ["idempotence_enabled"])
+
+    def test_b2_and_p1_differ_only_by_checkpoint_location(self):
+        b2 = dict(self.config["B2"])
+        p1 = dict(self.config["P1"])
+        changed_keys = sorted(key for key in set(b2) | set(p1) if b2.get(key) != p1.get(key))
+        self.assertEqual(changed_keys, ["checkpoint_location"])
+        self.assertIn("{ephemeral_root}", b2["checkpoint_location"])
+        self.assertIn("{persistent_root}", p1["checkpoint_location"])
+
     def test_b0_resolves_to_ephemeral_path(self):
         with self.assertRaises(ValueError):
             resolve_checkpoint_location(

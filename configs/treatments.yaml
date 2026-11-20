@@ -10,3 +10,7 @@ treatments:
   B2:
     idempotence_enabled: true
     checkpoint_location: "{ephemeral_root}/{run_id}/{treatment}"
+
+  P1:
+    idempotence_enabled: true
+    checkpoint_location: "{persistent_root}/{run_id}/{treatment}"

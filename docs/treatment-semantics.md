@@ -1,4 +1,4 @@
-# Semantik Checkpoint B0 dan B1
+# Semantik Treatment B0, B1, B2, dan P1
 
 ## Apa yang disimpan checkpoint
 
@@ -48,4 +48,4 @@ Aturan ini dibekukan untuk uji B2/P1 Hari 8–9. Jika uji pilot menunjukkan caca
 
 Lokasi checkpoint adalah satu-satunya kunci konfigurasi yang membedakan B0 dan B1. Akar checkpoint tidak ditempatkan di MinIO; MinIO adalah object storage/sink yang diuji, sedangkan checkpoint disimpan pada volume sementara atau disk VM sesuai treatment. Self-test instrumen T5a–T5c memverifikasi penanda persistent bertahan, penanda ephemeral hilang pada kontainer baru, dan mount ephemeral bertipe `tmpfs`.
 
-Perilaku B0/B1 pada F0 dan restart sudah diuji; buktinya ada di `docs/evidence/b0-f0-20261120.md`, `docs/evidence/b1-f0-20261120.md`, dan ringkasan restart B0/B1 di folder bukti. Aturan idempotence di atas berlaku untuk B2/P1 dan belum menjadi hasil eksperimen sampai uji Hari 8–13 dijalankan.
+Perilaku B0/B1 pada F0 dan restart sudah diuji; B2/P1 memakai kebijakan idempotence yang sama. Probe sink idempotence dan B2/F0 telah lulus di Lightsail. Bukti B2/F0 ada di `docs/evidence/b2-f0-20261120.log` dan ringkasannya di `docs/logbook.md`. P1/F0 serta fault/restart B2/P1 masih belum dijalankan.
