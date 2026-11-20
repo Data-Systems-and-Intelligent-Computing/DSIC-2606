@@ -11,3 +11,14 @@ reconciliation:
       definition: "Every recording_id has at most one metadata row"
       duplicate_metric: "count of recording_id values with row_count > 1"
       also_report: "excess duplicate rows and rows with empty recording_id"
+    I3:
+      name: "referential"
+      definition: "Metadata object_uri matches the frozen expected URI for its recording_id"
+      uri_equivalence: "s3:// and s3a:// are equivalent; bucket and object key must match exactly"
+    I4:
+      name: "no_orphan"
+      definition: "Every listed object in a manifest bucket is referenced by at least one metadata row"
+      object_listing: "List every page in each bucket referenced by expected metadata"
+    I5:
+      name: "no_dangling"
+      definition: "Every metadata object_uri resolves to a listed object in its bucket"

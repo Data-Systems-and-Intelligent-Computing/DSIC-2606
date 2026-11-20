@@ -55,3 +55,9 @@ Kolom runtime seperti `ingestion_time` dan `run_id` tidak dimasukkan ke `expecte
 | **I7 — Extra metadata** | Ada `recording_id` di tabel Iceberg yang tidak terdapat pada daftar acuan. | `recording_id` pada tabel Iceberg dibandingkan dengan daftar ID acuan. |
 
 Sebagian invarian memerlukan daftar objek aktual dari storage selain kolom `expected_metadata.csv`. Karena itu `expected_metadata.csv` sendiri tidak cukup untuk mendeteksi orphan atau dangling object.
+
+### Keputusan operasional untuk rekonsiliasi I3–I5
+
+- URI dinormalisasi hanya pada skema (`s3://` dan `s3a://` dianggap setara). Nama bucket dan object key dibandingkan persis, tanpa mengubah kapitalisasi atau prefix.
+- Objek dibaca dari seluruh halaman `ListObjectsV2` untuk setiap bucket yang dirujuk expected metadata. Objek yang tidak terpetakan atau tidak dirujuk tetap dilaporkan sebagai orphan; tidak diabaikan berdasarkan nama prefix.
+- Bila `object_uri` metadata diubah ke URI yang tidak ada, I3 dan I5 harus berbunyi, dan objek asli yang tak lagi dirujuk juga membuat I4 berbunyi. Bila objek tambahan disisipkan, hanya I4 berbunyi. Bila objek dihapus sementara metadata tetap ada, hanya I5 berbunyi.

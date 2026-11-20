@@ -561,6 +561,13 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Bukti mentah:** `docs/evidence/p1-f0-20261120.log`, `verify-batches-p1-f0-20261120.txt`, `verify-multipart-p1-f0-20261120.log`, dan `checkpoint-p1-f0-20261120.txt`.
 - **Batas bukti:** P1/F0 dan isolasi treatment pada konfigurasi sudah dibuktikan. Perilaku B2/P1 saat fault/restart serta rekonsiliasi I1–I2 masih perlu dikerjakan.
 
+### Hari 11 — Implementasi rekonsiliator I3–I5 — 21 November 2026
+
+- **Perubahan:** ditambahkan penilai I3 referential, I4 orphan object, dan I5 dangling metadata. Pembaca metadata mengambil kolom yang diperlukan dari tabel Iceberg; pembaca objek memakai paginator `ListObjectsV2` untuk seluruh halaman pada bucket yang dirujuk ground truth.
+- **Aturan URI:** `s3://` dan `s3a://` dianggap setara; bucket dan object key harus identik. URI salah pada metadata menghasilkan I3 dan I5; objek asal yang tidak lagi dirujuk juga menghasilkan I4. Objek tambahan hanya memicu I4, sedangkan objek yang hilang dengan metadata tersisa hanya memicu I5. Aturan ini dicatat di `docs/correctness-invariants.md`.
+- **Test lokal:** `python -m unittest discover tests -v` lulus: 60 test, kode keluar 0. Test baru memeriksa kasus I3–I5 dan paginasi pembaca objek. Keluaran tersimpan di `docs/evidence/unittest-20261121-i3-i5-local.txt`.
+- **Batas bukti:** implementasi I3–I5 baru diuji lokal. Belum dijalankan pada keadaan P1/F0 di Lightsail; audit VM baca-saja dan uji keadaan rusak masih diperlukan. I6–I7 juga belum diimplementasikan.
+
 ### Hari 10 — Reconciliation metadata I1–I2 — 21 November 2026
 
 - **Implementasi lokal:** ditambahkan evaluator completeness dan uniqueness. I1 membandingkan ID ground truth dengan ID pada tabel dan melaporkan missing count/rate. I2 melaporkan jumlah ID logis yang duplikat, kelebihan baris duplikat, dan baris dengan `recording_id` kosong. Ground truth kosong atau memiliki ID duplikat ditolak.
