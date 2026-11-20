@@ -1,0 +1,2 @@
+./scripts/capture_env.sh --check
+lingkungan sama dengan environment.lock.txt

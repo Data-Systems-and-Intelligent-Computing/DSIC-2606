@@ -1,0 +1,14 @@
+Batch yang diproses ulang:
+30
+Commit metadata pada restart:
+300
+Hasil audit:
+    raise RuntimeError(f"F0 metadata row count: expected 300, found {len(rows)}")
+RuntimeError: F0 metadata row count: expected 300, found 600
+Objek MinIO saat ini:
+ Container dsic2606-minio-init-run-f7acf491b9c8 Creating 
+ Container dsic2606-minio-init-run-f7acf491b9c8 Created 
+audiomoth 300
+warehouse 2401
+Checkpoint B0 di disk persisten:
+TIDAK ADA
