@@ -1,0 +1,11 @@
+idempotence:
+  object_key_source: "expected_object_uri_from_manifest_by_recording_id"
+  object_guard:
+    existing_object_checksum: "download_and_compute_sha256"
+    download_chunk_bytes: 1048576
+    on_size_or_checksum_mismatch: "fail_without_overwrite"
+  metadata_upsert:
+    match_key: "recording_id"
+    matched_equal: "no_op"
+    matched_different: "fail_without_overwrite"
+    reject_duplicate_ids_per_event: true

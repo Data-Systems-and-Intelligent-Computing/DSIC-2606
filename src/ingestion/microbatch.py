@@ -16,6 +16,9 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.checkpointing.treatment_config import resolve_checkpoint_location
+from src.idempotence.metadata_upsert import upsert_metadata
+from src.idempotence.object_guard import guard_object
+from src.idempotence.conflict_guard import require_unique_recording_ids
 from src.ingestion.source_replay import ReplayFeeder
 from src.ingestion.write_metadata import append_metadata, ensure_metadata_table, validate_metadata_table
 from src.ingestion.write_object import create_s3_client, prepare_upload_record, upload_recording
@@ -99,14 +102,16 @@ def _load_configs(root: Path, treatment: str):
     checkpoint = read("checkpoint.yaml")["checkpoint"]
     environment = read("environment.yaml")["environment"]
     ingestion = read("ingestion.yaml")["ingestion"]
-    if treatment not in {"B0", "B1"} or treatment not in treatments:
-        raise ValueError("TREATMENT must be B0 or B1")
-    return treatments[treatment], checkpoint, environment, ingestion
+    idempotence = read("idempotence.yaml")["idempotence"]
+    if treatment not in {"B0", "B1", "B2", "P1"} or treatment not in treatments:
+        raise ValueError("TREATMENT must be B0, B1, B2, or P1")
+    return treatments[treatment], checkpoint, environment, ingestion, idempotence
 
 
 def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
                    threshold: int, part_size: int, table: str, s3_client,
-                   expected_spark_batch_id: int) -> int:
+                   expected_spark_batch_id: int, idempotence_enabled: bool = False,
+                   idempotence_config: dict | None = None) -> int:
     event_id = int(event["batch_id"])
     if event_id != expected_spark_batch_id:
         raise RuntimeError(
@@ -114,8 +119,13 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
             f"Spark micro-batch {expected_spark_batch_id}"
         )
     recording_ids = event["recording_ids"]
-    if len(recording_ids) != 10 or len(set(recording_ids)) != 10:
-        raise ValueError(f"event {event_id} must contain 10 unique recording IDs")
+    if len(recording_ids) != 10:
+        raise ValueError(f"event {event_id} must contain 10 recording IDs")
+    # Validate the full event before touching either sink.
+    require_unique_recording_ids([{"recording_id": rid} for rid in recording_ids])
+    idempotence_config = idempotence_config or {}
+    object_policy = idempotence_config.get("object_guard", {})
+    chunk_bytes = int(object_policy.get("download_chunk_bytes", 1024 * 1024))
 
     # Keep each record's boundaries explicit: confirmed object PUT, then one
     # Iceberg append commit. This is the observable F1/F2 boundary in later phases.
@@ -124,7 +134,16 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
             raise ValueError(f"event {event_id} references unknown ID {recording_id}")
         source = manifest[recording_id]
         upload_item = prepare_upload_record(source, str(corpus_root), threshold, part_size)
-        upload_recording(s3_client, upload_item)
+        if idempotence_enabled:
+            object_result = guard_object(
+                s3_client, upload_item, download_chunk_bytes=chunk_bytes
+            )
+            LOGGER.info(
+                "OBJECT_GUARD_DECISION batch_id=%d recording_id=%s decision=%s bytes_verified=%d",
+                event_id, recording_id, object_result["decision"], object_result["bytes_verified"],
+            )
+        else:
+            upload_recording(s3_client, upload_item)
         metadata_row = {
             "recording_id": recording_id,
             "device_id": source["device_id"],
@@ -133,9 +152,16 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
             "file_size_bytes": int(source["file_size_bytes"]),
             "sha256": source["sha256"],
         }
-        append_metadata(spark, [metadata_row], table=table)
-        LOGGER.info("ICEBERG_COMMIT_COMPLETED batch_id=%d recording_id=%s rows=1",
-                    event_id, recording_id)
+        if idempotence_enabled:
+            result = upsert_metadata(spark, [metadata_row], table=table)
+            LOGGER.info(
+                "ICEBERG_UPSERT_COMPLETED batch_id=%d recording_id=%s inserted=%d already_present=%d",
+                event_id, recording_id, result["inserted"], result["already_present"],
+            )
+        else:
+            append_metadata(spark, [metadata_row], table=table)
+            LOGGER.info("ICEBERG_COMMIT_COMPLETED batch_id=%d recording_id=%s rows=1",
+                        event_id, recording_id)
 
     LOGGER.info("REPLAY_BATCH_COMPLETED batch_id=%d recording_ids=%s",
                 event_id, json.dumps(recording_ids, separators=(",", ":")))
@@ -213,7 +239,7 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
     if not run_id or not treatment:
         raise ValueError("RUN_ID and TREATMENT are required")
 
-    treatment_config, checkpoint_config, environment, ingestion = _load_configs(root, treatment)
+    treatment_config, checkpoint_config, environment, ingestion, idempotence_config = _load_configs(root, treatment)
     checkpoint_location = Path(resolve_checkpoint_location(
         treatment_config["checkpoint_location"],
         persistent_root=checkpoint_config.get("persistent_root"),
@@ -264,6 +290,7 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
         "object_store_endpoint": os.environ["S3_ENDPOINT"],
         "upload_multipart_threshold_bytes": threshold,
         "upload_multipart_part_size_bytes": part_size,
+        "idempotence_policy": idempotence_config,
     }
     LOGGER.info("EFFECTIVE_CONFIG %s", json.dumps(effective_config, sort_keys=True, separators=(",", ":")))
 
@@ -290,7 +317,9 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
                 raise RuntimeError(f"event {event['batch_id']} differs from frozen batch order")
             processed.append(_process_event(spark, event, manifest, corpus_root,
                                             threshold, part_size, table, s3_client,
-                                            int(spark_batch_id)))
+                                            int(spark_batch_id),
+                                            idempotence_enabled=bool(treatment_config["idempotence_enabled"]),
+                                            idempotence_config=idempotence_config))
 
         query = (spark.readStream.schema(event_schema)
                  .option("maxFilesPerTrigger", 1)

@@ -35,6 +35,10 @@ class TreatmentIsolationConfigTests(unittest.TestCase):
         self.assertFalse(self.config["B0"]["idempotence_enabled"])
         self.assertFalse(self.config["B1"]["idempotence_enabled"])
 
+    def test_b2_enables_idempotence_and_uses_ephemeral_checkpoint(self):
+        self.assertTrue(self.config["B2"]["idempotence_enabled"])
+        self.assertIn("{ephemeral_root}", self.config["B2"]["checkpoint_location"])
+
     def test_b0_resolves_to_ephemeral_path(self):
         with self.assertRaises(ValueError):
             resolve_checkpoint_location(
