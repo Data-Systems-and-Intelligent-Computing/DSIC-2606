@@ -1,11 +1,11 @@
 # Rumusan Pertanyaan Penelitian — RQ v1
 
-**Status: DRAFT — menunggu keputusan pembimbing D-03.**
+**Status: berlaku sebagai RQ penelitian (D-03, 20 November 2026; penutupan Gate Minggu 1 bersyarat D-41).**
 
 Dokumen ini merangkum pertanyaan penelitian dan hipotesis untuk evaluasi
 checkpointing dan idempotent ingestion pada pipeline AudioMoth. Versi ini
 mengikuti rumusan pada bagian *Research Question* dan *Hipotesis* di `README.md`.
-Rumusan belum ditetapkan sebagai versi final sampai keputusan D-03 diterima.
+Rumusan ini berlaku sesuai keputusan D-03. Aturan keputusan statistik tetap mengikuti pembekuan pada Hari 17.
 
 ## Pertanyaan penelitian utama
 
@@ -16,9 +16,8 @@ antara penulisan objek WAV, commit metadata, dan commit checkpoint?
 
 ## Pertanyaan penelitian turunan
 
-**RQ2.** Apakah strategi checkpoint-only (B1) mencegah keadaan duplikat atau
-kehilangan data ketika kegagalan terjadi setelah efek samping eksternal tetapi
-sebelum batch dianggap committed, dibandingkan baseline B0?
+**RQ2.** Apakah checkpoint-only mencegah state duplikat/hilang ketika kegagalan
+terjadi setelah efek samping eksternal tetapi sebelum batch dianggap committed?
 
 **RQ3.** Apakah strategi idempotence-only (B2) mempertahankan keadaan akhir yang
 tepat ketika pipeline memutar ulang pekerjaan dari progres yang lebih awal, dan
@@ -56,18 +55,13 @@ Hipotesis berikut adalah dugaan yang akan diuji; hasil boleh menolaknya.
 Penelitian mengukur correctness setelah pemulihan melalui kesesuaian objek WAV
 dan metadata terhadap ground-truth manifest serta invarian I1–I7. Penelitian
 tidak menganggap keberhasilan restart sebagai bukti correctness. Istilah
-*exactly-once* tidak digunakan sebagai klaim kecuali kesetaraan keadaan end-to-end
-terbukti pada seluruh failure point yang diuji. Hipotesis tidak dianggap benar
-sebelum hasil eksperimen tersedia.
+*exactly-once* tidak digunakan sebagai klaim hasil; kesimpulan dibatasi pada
+*post-recovery correctness* dan *exact recovery* di failure point yang diuji.
+Hipotesis tidak dianggap benar sebelum hasil eksperimen tersedia.
 
-## Perbedaan dari rumusan di manuskrip saat ini
+## Penyelarasan dengan manuskrip
 
-| Aspek | RQ v1 ini | `paper/manuscript.md` saat ini |
-|---|---|---|
-| Pertanyaan utama | Menyebut persistent checkpointing, application-level idempotence, dan urutan failure di antara PUT objek, commit metadata, serta commit checkpoint. | Menanyakan pengaruh checkpointing dan idempotent ingestion secara umum terhadap kehilangan, duplikasi, dan konsistensi objek-metadata. |
-| Perbandingan treatment | Memisahkan B1, B2, dan P1 untuk mengisolasi efek checkpoint, idempotence, dan kombinasinya. | Subpertanyaan membahas treatment, tetapi tidak merumuskan secara eksplisit perbandingan biaya pemrosesan ulang P1 terhadap B2. |
-| Failure point | Mengaitkan pertanyaan dengan tahapan efek samping dan commit yang diuji. | Menyebut F0–F3 pada subpertanyaan, tanpa menyatakan urutan commit di pertanyaan utama. |
-| Hipotesis | H1–H4 ditulis sebagai hipotesis yang dapat ditolak. | Bagian yang ditampilkan berisi RQ dan sub-RQ; hipotesis kerja ada di README. |
-
-Perbedaan ini dicatat untuk dibahas pada keputusan D-03. Dokumen manuskrip tidak
-diubah dalam langkah ini.
+Sebelum keputusan D-03, rumusan di manuskrip berbeda dari README: terutama,
+RQ3–RQ4 belum menanyakan biaya pemrosesan ulang. Sesuai D-41, bagian RQ di
+`paper/manuscript.md` kini diselaraskan dengan RQ1–RQ5 di atas. Hipotesis H1–H4
+mengikuti README dan tetap dapat ditolak berdasarkan hasil.

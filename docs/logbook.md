@@ -502,11 +502,18 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 ### RQ v1 untuk Gate Minggu 1 — 20 November 2026
 
 - **Kegiatan:** menyusun `docs/rq-v1.md` dengan RQ1–RQ5 dan hipotesis H1–H4 berdasarkan bagian *Research Question* dan *Hipotesis* di `README.md`.
-- **Perbandingan dokumen:** perbedaan dengan rumusan yang masih ada di `paper/manuscript.md` dicatat di dokumen RQ agar dapat ditinjau, tanpa mengubah manuskrip.
-- **Batas publikasi:** `docs/publication-boundary.md` dilengkapi dengan enam klaim yang tidak dibuat dan cakupan Gate Minggu 1. Dokumen tetap berstatus draf sambil menunggu keputusan D-03.
+- **Perbandingan dokumen saat itu:** perbedaan dengan rumusan di `paper/manuscript.md` dicatat untuk ditinjau; keputusan D-03 belum tercatat pada entri awal ini.
+- **Batas publikasi:** `docs/publication-boundary.md` dilengkapi dengan enam klaim yang tidak dibuat dan cakupan Gate Minggu 1. Pada saat pencatatan awal, dokumen masih berstatus draf.
 - **Uji bahasa klaim:** `tests/test_claim_language.py` memindai `src/`, `paper/`, dan `results/` untuk frasa `exactly-once` atau `exactly once`. Test lulus pada isi repo, gagal dengan kode 1 ketika frasa terlarang sementara ditambahkan ke `paper/`, lalu lulus lagi setelah berkas probe dihapus. Keluaran asli tersimpan di `docs/evidence/claim-language-20261120.txt`.
 - **Suite lengkap:** `python -m unittest discover tests -v` lulus: 30 test, 0 gagal, kode keluar 0. Keluaran aktual pada revisi ini tersimpan di `docs/evidence/unittest-gate-week1-20261120.txt`; validasi parse YAML untuk `configs/environment.yaml` dan `configs/ingestion.yaml` juga lulus.
-- **Status:** RQ belum dibekukan; keputusan pembimbing D-03 masih menunggu. Tidak ada klaim hasil eksperimen baru.
+- **Status pada entri awal:** RQ masih draf ketika catatan ini dibuat. Tidak ada klaim hasil eksperimen baru.
+
+### Penyelarasan dokumen setelah keputusan D-03 / D-41 — 20 November 2026
+
+- **Keputusan:** paket terbaru pembimbing mencatat bahwa D-03 menetapkan rumusan RQ di README sebagai acuan dan D-41 menutup Gate Minggu 1 secara bersyarat. Pak Dika mengizinkan dimulainya Minggu 2.
+- **RQ dan manuskrip:** `docs/rq-v1.md` dan bagian pertanyaan penelitian di `paper/manuscript.md` diselaraskan dengan RQ1–RQ5 README; frasa tambahan perbandingan terhadap B0 pada RQ2 dihapus agar rumusannya sama dengan acuan.
+- **Batas publikasi:** status `docs/publication-boundary.md` diubah dari DRAFT menjadi berlaku sesuai D-03. Klaim tetap dibatasi pada hasil *post-recovery correctness* dan *exact recovery* yang benar-benar diuji.
+- **Gate:** laporan Gate Minggu 1 diperbarui untuk mencatat penutupan bersyarat D-41. Ini mengizinkan pekerjaan Minggu 2, tetapi tidak menyatakan hipotesis F1–F3 telah teruji.
 
 ### Hari 5 — Pemeriksaan lingkungan dan self-test di Lightsail — 20 November 2026
 

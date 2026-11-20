@@ -1,6 +1,6 @@
 # Laporan Korpus Eksperimen — Fase 1
 
-**Status korpus: Beku. Status Gate Minggu 1: belum diaudit/ditutup.** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di Lightsail, uji negatif verifier, checksum korpus, metadata acuan, serta bukti B0/B1 F0. Penutupan gate masih menunggu keputusan pembimbing D-03 untuk RQ v1 dan pengumpulan paket bukti akhir.
+**Status korpus: Beku. Status Gate Minggu 1: ditutup bersyarat (D-41).** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di Lightsail, uji negatif verifier, checksum korpus, metadata acuan, serta bukti B0/B1 F0. Syarat dokumentasi D-41 dicatat di bawah; pembimbing telah mengizinkan dimulainya Minggu 2.
 
 ## Ruang Lingkup
 
@@ -98,7 +98,7 @@ Pada 20 November 2026, setelah penambahan uji bahasa klaim dan uji negatif integ
 
 | # | Kriteria | Status berdasarkan bukti repo saat ini |
 |---:|---|---|
-| 1 | RQ, sub-RQ, batas publikasi, dan logbook | **Menunggu D-03.** `docs/rq-v1.md` dan batas publikasi sudah disiapkan sebagai DRAFT; pembimbing belum menetapkan versi final. |
+| 1 | RQ, sub-RQ, batas publikasi, dan logbook | **Syarat D-41 dikerjakan:** RQ dan batas publikasi berstatus berlaku dengan rujukan D-03; bagian RQ di `paper/manuscript.md` diselaraskan dengan RQ1–RQ5. |
 | 2 | Korpus beku, cocok di Lightsail, SHA-256 lengkap | **Lulus di Lightsail:** pemeriksaan ulang 20 November menunjukkan 300/300 cocok, 0 berkas hilang/berlebih/tidak cocok, dan SHA-256 exit 0. Keluaran mentah telah disalin ke `docs/evidence/week1-day2-corpus-20261120.log`. |
 | 3 | Urutan masukan dan komposisi batch beku | **Lulus:** 30 batch × 10 ID cocok pada B0/F0 dan B1/F0. |
 | 4 | Angka korpus dilaporkan | **Lulus:** statistik dihitung skrip dan dicatat pada laporan ini. |
@@ -111,11 +111,10 @@ Pada 20 November 2026, setelah penambahan uji bahasa klaim dan uji negatif integ
 | 11 | B0/B1 berjalan F0, beda satu kunci, perilaku checkpoint terbukti | **Lulus:** kedua F0 300 objek/300 baris; log efektif beda hanya `checkpoint_location`; bukti restart B0 dan B1 ada. |
 | 12 | B0 baseline wajar, bukan sengaja dilemahkan | **Lulus:** paragraf ada di `docs/treatment-semantics.md`, commit `b98358f` mendahului eksekusi F0. |
 
-## Yang masih diperlukan untuk penutupan
+## Catatan penutupan bersyarat D-41
 
-- Keputusan pembimbing D-03 untuk menetapkan RQ v1; jangan menghapus status DRAFT sebelum ada keputusan.
-- Keluaran mentah Hari 1 dan Hari 2 sudah disalin ke `docs/evidence/`; rincian snapshot, sinkronisasi repo, serta verifikasi korpus tercatat di logbook.
-- RQ v1 tetap DRAFT sampai keputusan D-03 diterima.
-- Buat commit yang memuat dokumen, test, konfigurasi, laporan dan bukti terbaru; kirim hash commit beserta paket bukti untuk audit Gate Minggu 1.
+- Keputusan D-03 menetapkan rumusan RQ di README sebagai acuan. Status dan penyelarasan dokumen diperbarui mengikuti D-41.
+- Keluaran mentah Hari 1, Hari 2, dan Hari 5 sudah disalin ke `docs/evidence/`; rincian snapshot, sinkronisasi repo, verifikasi korpus, dan self-test dicatat di logbook.
+- Perubahan dokumen D-41 perlu masuk ke commit berikutnya bersama logbook dan laporan yang diperbarui.
 
-Gate Minggu 1 **belum dinyatakan lulus** sampai keputusan D-03 dan audit pembimbing diterima. Status ini tidak mengurangi hasil eksperimen B0/B1 F0 yang sudah tercatat.
+Gate Minggu 1 ditutup **bersyarat**, bukan sebagai klaim bahwa hipotesis penelitian telah diuji. Eksperimen F1–F3 dan hipotesis masih menjadi pekerjaan fase berikutnya.

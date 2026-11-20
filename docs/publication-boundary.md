@@ -1,11 +1,11 @@
 # Batas Publikasi (Delimitasi Penelitian)
 
-**Status: DRAFT — ditinjau bersama RQ v1 yang menunggu keputusan pembimbing D-03.**
+**Status: berlaku bersama RQ v1 sesuai D-03 (20 November 2026); penutupan Gate Minggu 1 bersyarat D-41.**
 
 Penelitian ini memiliki batasan ruang lingkup yang tegas sebagai berikut:
 
 * **Tidak menganalisis isi/konten akustik:** Berkas `.WAV` hasil rekaman AudioMoth diperlakukan secara murni sebagai objek biner yang tidak dapat diubah (*immutable*). Tidak ada ekstraksi fitur suara, klasifikasi spesies, maupun analisis ekologis.
-* **Tidak mengklaim semantik *exactly-once*:** Istilah teknis ini dilarang dan tidak akan digunakan dalam laporan akhir, kecuali kesetaraan keadaan ganda benar-benar terbukti secara *end-to-end* secara matematis.
+* **Tidak mengklaim semantik *exactly-once*:** penelitian membatasi klaim pada *post-recovery correctness* dan *exact recovery* yang diuji terhadap objek dan metadata. Keberhasilan pada failure point yang diuji tidak digeneralisasi menjadi jaminan *exactly-once* end-to-end.
 * **Tidak berfokus pada optimasi kinerja:** Fokus pengujian murni dititikberatkan pada korektnes (kebenaran) data pasca-pemulihan, bukan pada seberapa cepat waktu pemulihannya.
 * **Tidak menguji titik kegagalan perangkat keras:** Tidak ada pengujian untuk kegagalan fisik (misal: baterai habis, kerusakan *SD Card*). Pengujian difokuskan pada kegagalan *pipeline* perangkat lunak (titik kegagalan F1 hingga F3).
 * **Skala eksekusi terkendali:** Tidak melakukan pengujian *production/real-time* berskala besar di luar parameter 128 eksekusi independen yang telah dirancang pada dokumen arsitektur.
@@ -22,10 +22,8 @@ Penelitian ini tidak menyimpulkan bahwa:
 6. Penelitian ini adalah pipeline bioakustik toleran kegagalan yang pertama.
 
 Klaim harus dibatasi pada konfigurasi, failure point, korpus, dan bukti yang
-benar-benar diuji. Bahasa yang digunakan adalah *post-recovery correctness* dan
-*exact recovery*. Istilah *exactly-once* hanya boleh muncul sebagai klaim jika
-kesetaraan state objek dan metadata terbukti end-to-end pada seluruh failure
-point dalam model yang diuji.
+benar-benar diuji. Bahasa hasil yang digunakan adalah *post-recovery correctness*
+dan *exact recovery*; istilah *exactly-once* tidak dipakai sebagai klaim hasil.
 
 ## Cakupan kerja untuk Gate Minggu 1
 
