@@ -9,9 +9,13 @@ from __future__ import annotations
 
 import hashlib
 import os
+import sys
 import tempfile
 import uuid
 from pathlib import Path
+
+# spark-submit sets sys.path[0] to this scripts directory, not the repo root.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.idempotence.conflict_guard import IdempotenceConflictError
 from src.idempotence.metadata_upsert import upsert_metadata
