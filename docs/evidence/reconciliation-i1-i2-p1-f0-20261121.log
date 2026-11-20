@@ -1,0 +1,273 @@
+ Container dsic2606-driver-run-705dedfaae27 Creating 
+ Container dsic2606-driver-run-705dedfaae27 Created 
+26/11/20 17:22:41 INFO SparkContext: Running Spark version 3.5.3
+26/11/20 17:22:41 INFO SparkContext: OS info Linux, 7.0.0-1012-aws, amd64
+26/11/20 17:22:41 INFO SparkContext: Java version 17.0.12
+26/11/20 17:22:41 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/11/20 17:22:42 INFO ResourceUtils: ==============================================================
+26/11/20 17:22:42 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/11/20 17:22:42 INFO ResourceUtils: ==============================================================
+26/11/20 17:22:42 INFO SparkContext: Submitted application: DSIC-2606-reconcile-I1-I2
+26/11/20 17:22:42 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 2, script: , vendor: , memory -> name: memory, amount: 2048, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/11/20 17:22:42 INFO ResourceProfile: Limiting resource is cpus at 2 tasks per executor
+26/11/20 17:22:42 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/11/20 17:22:42 INFO SecurityManager: Changing view acls to: spark
+26/11/20 17:22:42 INFO SecurityManager: Changing modify acls to: spark
+26/11/20 17:22:42 INFO SecurityManager: Changing view acls groups to: 
+26/11/20 17:22:42 INFO SecurityManager: Changing modify acls groups to: 
+26/11/20 17:22:42 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: spark; groups with view permissions: EMPTY; users with modify permissions: spark; groups with modify permissions: EMPTY
+26/11/20 17:22:43 INFO Utils: Successfully started service 'sparkDriver' on port 33325.
+26/11/20 17:22:44 INFO SparkEnv: Registering MapOutputTracker
+26/11/20 17:22:44 INFO SparkEnv: Registering BlockManagerMaster
+26/11/20 17:22:44 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/11/20 17:22:44 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/11/20 17:22:44 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/11/20 17:22:44 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-4d46cef3-1bd7-45c6-b4bc-2194f5475d50
+26/11/20 17:22:44 INFO MemoryStore: MemoryStore started with capacity 413.9 MiB
+26/11/20 17:22:44 INFO SparkEnv: Registering OutputCommitCoordinator
+26/11/20 17:22:45 INFO StandaloneAppClient$ClientEndpoint: Connecting to master spark://spark-master:7077...
+26/11/20 17:22:45 INFO TransportClientFactory: Successfully created connection to spark-master/172.19.0.4:7077 after 111 ms (0 ms spent in bootstraps)
+26/11/20 17:22:46 INFO StandaloneSchedulerBackend: Connected to Spark cluster with app ID app-20261120172246-0003
+26/11/20 17:22:46 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20261120172246-0003/0 on worker-20261120103652-172.19.0.5-37023 (172.19.0.5:37023) with 2 core(s)
+26/11/20 17:22:46 INFO StandaloneSchedulerBackend: Granted executor ID app-20261120172246-0003/0 on hostPort 172.19.0.5:37023 with 2 core(s), 2.0 GiB RAM
+26/11/20 17:22:46 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 45563.
+26/11/20 17:22:46 INFO NettyBlockTransferService: Server created on 172.19.0.6 0.0.0.0:45563
+26/11/20 17:22:46 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/11/20 17:22:46 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20261120172246-0003/0 is now RUNNING
+26/11/20 17:22:46 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 172.19.0.6, 45563, None)
+26/11/20 17:22:46 INFO BlockManagerMasterEndpoint: Registering block manager 172.19.0.6:45563 with 413.9 MiB RAM, BlockManagerId(driver, 172.19.0.6, 45563, None)
+26/11/20 17:22:46 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 172.19.0.6, 45563, None)
+26/11/20 17:22:46 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 172.19.0.6, 45563, None)
+26/11/20 17:22:48 INFO SingleEventLogFileWriter: Logging events to file:/results/eventlog/app-20261120172246-0003.inprogress
+26/11/20 17:22:49 INFO StandaloneSchedulerBackend: SchedulerBackend is ready for scheduling beginning after reached minRegisteredResourcesRatio: 0.0
+26/11/20 17:22:50 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+26/11/20 17:22:50 INFO SharedState: Warehouse path is 'file:/workspace/spark-warehouse'.
+26/11/20 17:22:51 INFO StandaloneSchedulerBackend$StandaloneDriverEndpoint: Registered executor NettyRpcEndpointRef(spark-client://Executor) (172.19.0.5:47804) with ID 0,  ResourceProfileId 0
+26/11/20 17:22:51 INFO BlockManagerMasterEndpoint: Registering block manager 172.19.0.5:42695 with 1048.8 MiB RAM, BlockManagerId(0, 172.19.0.5, 42695, None)
+26/11/20 17:22:55 INFO CatalogUtil: Loading custom FileIO implementation: org.apache.iceberg.aws.s3.S3FileIO
+26/11/20 17:22:56 WARN JdbcCatalog: JDBC catalog is initialized without view support. To auto-migrate the database's schema and enable view support, set jdbc.schema-version=V1
+26/11/20 17:22:56 INFO BaseMetastoreTableOperations: Refreshing table metadata from new version: s3://warehouse/main/recordings/metadata/00300-e724fdf7-fa5b-4e35-8240-29c34d3f3e72.metadata.json
+26/11/20 17:23:01 INFO BaseMetastoreCatalog: Table loaded by catalog: lab.main.recordings
+26/11/20 17:23:05 INFO V2ScanRelationPushDown: 
+Output: recording_id#0
+         
+26/11/20 17:23:05 INFO SnapshotScan: Scanning table lab.main.recordings snapshot 7528693410074601132 created at 2026-11-20T16:52:02.610+00:00 with filter true
+26/11/20 17:23:06 INFO BaseDistributedDataScan: Planning file tasks locally for table lab.main.recordings
+26/11/20 17:23:07 INFO SparkPartitioningAwareScan: Reporting UnknownPartitioning with 75 partition(s) for table lab.main.recordings
+26/11/20 17:23:08 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 32.0 KiB, free 413.9 MiB)
+26/11/20 17:23:08 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 413.9 MiB)
+26/11/20 17:23:08 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on 172.19.0.6:45563 (size: 3.4 KiB, free: 413.9 MiB)
+26/11/20 17:23:08 INFO SparkContext: Created broadcast 0 from collect at /workspace/src/reconciliation/reconcile.py:29
+26/11/20 17:23:08 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 32.0 KiB, free 413.9 MiB)
+26/11/20 17:23:08 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 413.9 MiB)
+26/11/20 17:23:08 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 172.19.0.6:45563 (size: 3.4 KiB, free: 413.9 MiB)
+26/11/20 17:23:08 INFO SparkContext: Created broadcast 1 from collect at /workspace/src/reconciliation/reconcile.py:29
+26/11/20 17:23:10 INFO AsyncEventQueue: Process of event SparkListenerSQLExecutionStart(0,Some(0),collect at /workspace/src/reconciliation/reconcile.py:29,org.apache.spark.sql.Dataset.collectToPython(Dataset.scala:4146)
+java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+java.base/java.lang.reflect.Method.invoke(Method.java:569)
+py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+py4j.Gateway.invoke(Gateway.java:282)
+py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+py4j.commands.CallCommand.execute(CallCommand.java:79)
+py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+java.base/java.lang.Thread.run(Thread.java:840),== Physical Plan ==
+* ColumnarToRow (2)
++- BatchScan lab.main.recordings (1)
+
+
+(1) BatchScan lab.main.recordings
+Output [1]: [recording_id#0]
+lab.main.recordings (branch=null) [filters=, groupedBy=]
+
+(2) ColumnarToRow [codegen id : 1]
+Input [1]: [recording_id#0]
+
+,org.apache.spark.sql.execution.SparkPlanInfo@8316aebc,1795195389075,Map(),Set()) by listener EventLoggingListener took 1.691220459s.
+26/11/20 17:23:12 INFO CodeGenerator: Code generated in 1101.776671 ms
+26/11/20 17:23:13 INFO SparkContext: Starting job: collect at /workspace/src/reconciliation/reconcile.py:29
+26/11/20 17:23:13 INFO DAGScheduler: Got job 0 (collect at /workspace/src/reconciliation/reconcile.py:29) with 75 output partitions
+26/11/20 17:23:13 INFO DAGScheduler: Final stage: ResultStage 0 (collect at /workspace/src/reconciliation/reconcile.py:29)
+26/11/20 17:23:13 INFO DAGScheduler: Parents of final stage: List()
+26/11/20 17:23:13 INFO DAGScheduler: Missing parents: List()
+26/11/20 17:23:13 INFO DAGScheduler: Submitting ResultStage 0 (MapPartitionsRDD[3] at collect at /workspace/src/reconciliation/reconcile.py:29), which has no missing parents
+26/11/20 17:23:13 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 13.6 KiB, free 413.8 MiB)
+26/11/20 17:23:13 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 5.5 KiB, free 413.8 MiB)
+26/11/20 17:23:13 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 172.19.0.6:45563 (size: 5.5 KiB, free: 413.9 MiB)
+26/11/20 17:23:13 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1585
+26/11/20 17:23:13 INFO DAGScheduler: Submitting 75 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at collect at /workspace/src/reconciliation/reconcile.py:29) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14))
+26/11/20 17:23:13 INFO TaskSchedulerImpl: Adding task set 0.0 with 75 tasks resource profile 0
+26/11/20 17:23:13 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0) (172.19.0.5, executor 0, partition 0, PROCESS_LOCAL, 14367 bytes) 
+26/11/20 17:23:14 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1) (172.19.0.5, executor 0, partition 1, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:14 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 172.19.0.5:42695 (size: 5.5 KiB, free: 1048.8 MiB)
+26/11/20 17:23:16 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 172.19.0.5:42695 (size: 3.4 KiB, free: 1048.8 MiB)
+26/11/20 17:23:19 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2) (172.19.0.5, executor 0, partition 2, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:19 INFO TaskSetManager: Starting task 3.0 in stage 0.0 (TID 3) (172.19.0.5, executor 0, partition 3, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:19 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 5704 ms on 172.19.0.5 (executor 0) (1/75)
+26/11/20 17:23:19 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 5595 ms on 172.19.0.5 (executor 0) (2/75)
+26/11/20 17:23:19 INFO TaskSetManager: Starting task 4.0 in stage 0.0 (TID 4) (172.19.0.5, executor 0, partition 4, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:19 INFO TaskSetManager: Starting task 5.0 in stage 0.0 (TID 5) (172.19.0.5, executor 0, partition 5, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:19 INFO TaskSetManager: Finished task 3.0 in stage 0.0 (TID 3) in 389 ms on 172.19.0.5 (executor 0) (3/75)
+26/11/20 17:23:19 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 481 ms on 172.19.0.5 (executor 0) (4/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 6.0 in stage 0.0 (TID 6) (172.19.0.5, executor 0, partition 6, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 4.0 in stage 0.0 (TID 4) in 305 ms on 172.19.0.5 (executor 0) (5/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 7.0 in stage 0.0 (TID 7) (172.19.0.5, executor 0, partition 7, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 5.0 in stage 0.0 (TID 5) in 400 ms on 172.19.0.5 (executor 0) (6/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 8.0 in stage 0.0 (TID 8) (172.19.0.5, executor 0, partition 8, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 6.0 in stage 0.0 (TID 6) in 305 ms on 172.19.0.5 (executor 0) (7/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 9.0 in stage 0.0 (TID 9) (172.19.0.5, executor 0, partition 9, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 7.0 in stage 0.0 (TID 7) in 303 ms on 172.19.0.5 (executor 0) (8/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 10.0 in stage 0.0 (TID 10) (172.19.0.5, executor 0, partition 10, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 8.0 in stage 0.0 (TID 8) in 206 ms on 172.19.0.5 (executor 0) (9/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 11.0 in stage 0.0 (TID 11) (172.19.0.5, executor 0, partition 11, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 9.0 in stage 0.0 (TID 9) in 217 ms on 172.19.0.5 (executor 0) (10/75)
+26/11/20 17:23:20 INFO TaskSetManager: Starting task 12.0 in stage 0.0 (TID 12) (172.19.0.5, executor 0, partition 12, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:20 INFO TaskSetManager: Finished task 10.0 in stage 0.0 (TID 10) in 312 ms on 172.19.0.5 (executor 0) (11/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 13.0 in stage 0.0 (TID 13) (172.19.0.5, executor 0, partition 13, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 11.0 in stage 0.0 (TID 11) in 300 ms on 172.19.0.5 (executor 0) (12/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 14.0 in stage 0.0 (TID 14) (172.19.0.5, executor 0, partition 14, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 12.0 in stage 0.0 (TID 12) in 208 ms on 172.19.0.5 (executor 0) (13/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 15.0 in stage 0.0 (TID 15) (172.19.0.5, executor 0, partition 15, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 13.0 in stage 0.0 (TID 13) in 216 ms on 172.19.0.5 (executor 0) (14/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 16.0 in stage 0.0 (TID 16) (172.19.0.5, executor 0, partition 16, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 14.0 in stage 0.0 (TID 14) in 272 ms on 172.19.0.5 (executor 0) (15/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 17.0 in stage 0.0 (TID 17) (172.19.0.5, executor 0, partition 17, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 15.0 in stage 0.0 (TID 15) in 209 ms on 172.19.0.5 (executor 0) (16/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 18.0 in stage 0.0 (TID 18) (172.19.0.5, executor 0, partition 18, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 16.0 in stage 0.0 (TID 16) in 217 ms on 172.19.0.5 (executor 0) (17/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 19.0 in stage 0.0 (TID 19) (172.19.0.5, executor 0, partition 19, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 17.0 in stage 0.0 (TID 17) in 257 ms on 172.19.0.5 (executor 0) (18/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 20.0 in stage 0.0 (TID 20) (172.19.0.5, executor 0, partition 20, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 18.0 in stage 0.0 (TID 18) in 210 ms on 172.19.0.5 (executor 0) (19/75)
+26/11/20 17:23:21 INFO TaskSetManager: Starting task 21.0 in stage 0.0 (TID 21) (172.19.0.5, executor 0, partition 21, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:21 INFO TaskSetManager: Finished task 19.0 in stage 0.0 (TID 19) in 202 ms on 172.19.0.5 (executor 0) (20/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 22.0 in stage 0.0 (TID 22) (172.19.0.5, executor 0, partition 22, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 20.0 in stage 0.0 (TID 20) in 203 ms on 172.19.0.5 (executor 0) (21/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 23.0 in stage 0.0 (TID 23) (172.19.0.5, executor 0, partition 23, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 21.0 in stage 0.0 (TID 21) in 255 ms on 172.19.0.5 (executor 0) (22/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 24.0 in stage 0.0 (TID 24) (172.19.0.5, executor 0, partition 24, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 22.0 in stage 0.0 (TID 22) in 212 ms on 172.19.0.5 (executor 0) (23/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 25.0 in stage 0.0 (TID 25) (172.19.0.5, executor 0, partition 25, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 23.0 in stage 0.0 (TID 23) in 206 ms on 172.19.0.5 (executor 0) (24/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 26.0 in stage 0.0 (TID 26) (172.19.0.5, executor 0, partition 26, PROCESS_LOCAL, 14250 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 24.0 in stage 0.0 (TID 24) in 197 ms on 172.19.0.5 (executor 0) (25/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 27.0 in stage 0.0 (TID 27) (172.19.0.5, executor 0, partition 27, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 25.0 in stage 0.0 (TID 25) in 202 ms on 172.19.0.5 (executor 0) (26/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 28.0 in stage 0.0 (TID 28) (172.19.0.5, executor 0, partition 28, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 26.0 in stage 0.0 (TID 26) in 200 ms on 172.19.0.5 (executor 0) (27/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 29.0 in stage 0.0 (TID 29) (172.19.0.5, executor 0, partition 29, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 27.0 in stage 0.0 (TID 27) in 210 ms on 172.19.0.5 (executor 0) (28/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 30.0 in stage 0.0 (TID 30) (172.19.0.5, executor 0, partition 30, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 28.0 in stage 0.0 (TID 28) in 214 ms on 172.19.0.5 (executor 0) (29/75)
+26/11/20 17:23:22 INFO TaskSetManager: Starting task 31.0 in stage 0.0 (TID 31) (172.19.0.5, executor 0, partition 31, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:22 INFO TaskSetManager: Finished task 29.0 in stage 0.0 (TID 29) in 190 ms on 172.19.0.5 (executor 0) (30/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 32.0 in stage 0.0 (TID 32) (172.19.0.5, executor 0, partition 32, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 30.0 in stage 0.0 (TID 30) in 189 ms on 172.19.0.5 (executor 0) (31/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 33.0 in stage 0.0 (TID 33) (172.19.0.5, executor 0, partition 33, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 31.0 in stage 0.0 (TID 31) in 202 ms on 172.19.0.5 (executor 0) (32/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 34.0 in stage 0.0 (TID 34) (172.19.0.5, executor 0, partition 34, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 32.0 in stage 0.0 (TID 32) in 216 ms on 172.19.0.5 (executor 0) (33/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 35.0 in stage 0.0 (TID 35) (172.19.0.5, executor 0, partition 35, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 33.0 in stage 0.0 (TID 33) in 208 ms on 172.19.0.5 (executor 0) (34/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 36.0 in stage 0.0 (TID 36) (172.19.0.5, executor 0, partition 36, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 34.0 in stage 0.0 (TID 34) in 202 ms on 172.19.0.5 (executor 0) (35/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 37.0 in stage 0.0 (TID 37) (172.19.0.5, executor 0, partition 37, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 35.0 in stage 0.0 (TID 35) in 198 ms on 172.19.0.5 (executor 0) (36/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 38.0 in stage 0.0 (TID 38) (172.19.0.5, executor 0, partition 38, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 36.0 in stage 0.0 (TID 36) in 115 ms on 172.19.0.5 (executor 0) (37/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 39.0 in stage 0.0 (TID 39) (172.19.0.5, executor 0, partition 39, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 37.0 in stage 0.0 (TID 37) in 193 ms on 172.19.0.5 (executor 0) (38/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 40.0 in stage 0.0 (TID 40) (172.19.0.5, executor 0, partition 40, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 38.0 in stage 0.0 (TID 38) in 196 ms on 172.19.0.5 (executor 0) (39/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 41.0 in stage 0.0 (TID 41) (172.19.0.5, executor 0, partition 41, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 39.0 in stage 0.0 (TID 39) in 182 ms on 172.19.0.5 (executor 0) (40/75)
+26/11/20 17:23:23 INFO TaskSetManager: Starting task 42.0 in stage 0.0 (TID 42) (172.19.0.5, executor 0, partition 42, PROCESS_LOCAL, 14246 bytes) 
+26/11/20 17:23:23 INFO TaskSetManager: Finished task 40.0 in stage 0.0 (TID 40) in 205 ms on 172.19.0.5 (executor 0) (41/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 43.0 in stage 0.0 (TID 43) (172.19.0.5, executor 0, partition 43, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 41.0 in stage 0.0 (TID 41) in 210 ms on 172.19.0.5 (executor 0) (42/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 44.0 in stage 0.0 (TID 44) (172.19.0.5, executor 0, partition 44, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 42.0 in stage 0.0 (TID 42) in 178 ms on 172.19.0.5 (executor 0) (43/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 45.0 in stage 0.0 (TID 45) (172.19.0.5, executor 0, partition 45, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 46.0 in stage 0.0 (TID 46) (172.19.0.5, executor 0, partition 46, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 44.0 in stage 0.0 (TID 44) in 148 ms on 172.19.0.5 (executor 0) (44/75)
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 43.0 in stage 0.0 (TID 43) in 217 ms on 172.19.0.5 (executor 0) (45/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 47.0 in stage 0.0 (TID 47) (172.19.0.5, executor 0, partition 47, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 48.0 in stage 0.0 (TID 48) (172.19.0.5, executor 0, partition 48, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 45.0 in stage 0.0 (TID 45) in 197 ms on 172.19.0.5 (executor 0) (46/75)
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 46.0 in stage 0.0 (TID 46) in 196 ms on 172.19.0.5 (executor 0) (47/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 49.0 in stage 0.0 (TID 49) (172.19.0.5, executor 0, partition 49, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 50.0 in stage 0.0 (TID 50) (172.19.0.5, executor 0, partition 50, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 48.0 in stage 0.0 (TID 48) in 202 ms on 172.19.0.5 (executor 0) (48/75)
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 47.0 in stage 0.0 (TID 47) in 210 ms on 172.19.0.5 (executor 0) (49/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 51.0 in stage 0.0 (TID 51) (172.19.0.5, executor 0, partition 51, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 49.0 in stage 0.0 (TID 49) in 123 ms on 172.19.0.5 (executor 0) (50/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 52.0 in stage 0.0 (TID 52) (172.19.0.5, executor 0, partition 52, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 50.0 in stage 0.0 (TID 50) in 124 ms on 172.19.0.5 (executor 0) (51/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 53.0 in stage 0.0 (TID 53) (172.19.0.5, executor 0, partition 53, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 52.0 in stage 0.0 (TID 52) in 175 ms on 172.19.0.5 (executor 0) (52/75)
+26/11/20 17:23:24 INFO TaskSetManager: Starting task 54.0 in stage 0.0 (TID 54) (172.19.0.5, executor 0, partition 54, PROCESS_LOCAL, 14355 bytes) 
+26/11/20 17:23:24 INFO TaskSetManager: Finished task 51.0 in stage 0.0 (TID 51) in 187 ms on 172.19.0.5 (executor 0) (53/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 55.0 in stage 0.0 (TID 55) (172.19.0.5, executor 0, partition 55, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 56.0 in stage 0.0 (TID 56) (172.19.0.5, executor 0, partition 56, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 53.0 in stage 0.0 (TID 53) in 210 ms on 172.19.0.5 (executor 0) (54/75)
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 54.0 in stage 0.0 (TID 54) in 210 ms on 172.19.0.5 (executor 0) (55/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 57.0 in stage 0.0 (TID 57) (172.19.0.5, executor 0, partition 57, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 56.0 in stage 0.0 (TID 56) in 113 ms on 172.19.0.5 (executor 0) (56/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 58.0 in stage 0.0 (TID 58) (172.19.0.5, executor 0, partition 58, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 55.0 in stage 0.0 (TID 55) in 121 ms on 172.19.0.5 (executor 0) (57/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 59.0 in stage 0.0 (TID 59) (172.19.0.5, executor 0, partition 59, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 58.0 in stage 0.0 (TID 58) in 114 ms on 172.19.0.5 (executor 0) (58/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 60.0 in stage 0.0 (TID 60) (172.19.0.5, executor 0, partition 60, PROCESS_LOCAL, 14210 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 57.0 in stage 0.0 (TID 57) in 190 ms on 172.19.0.5 (executor 0) (59/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 61.0 in stage 0.0 (TID 61) (172.19.0.5, executor 0, partition 61, PROCESS_LOCAL, 14208 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 59.0 in stage 0.0 (TID 59) in 171 ms on 172.19.0.5 (executor 0) (60/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 62.0 in stage 0.0 (TID 62) (172.19.0.5, executor 0, partition 62, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 60.0 in stage 0.0 (TID 60) in 122 ms on 172.19.0.5 (executor 0) (61/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 63.0 in stage 0.0 (TID 63) (172.19.0.5, executor 0, partition 63, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 61.0 in stage 0.0 (TID 61) in 111 ms on 172.19.0.5 (executor 0) (62/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 64.0 in stage 0.0 (TID 64) (172.19.0.5, executor 0, partition 64, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 65.0 in stage 0.0 (TID 65) (172.19.0.5, executor 0, partition 65, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 62.0 in stage 0.0 (TID 62) in 203 ms on 172.19.0.5 (executor 0) (63/75)
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 63.0 in stage 0.0 (TID 63) in 119 ms on 172.19.0.5 (executor 0) (64/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 66.0 in stage 0.0 (TID 66) (172.19.0.5, executor 0, partition 66, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 65.0 in stage 0.0 (TID 65) in 186 ms on 172.19.0.5 (executor 0) (65/75)
+26/11/20 17:23:25 INFO TaskSetManager: Starting task 67.0 in stage 0.0 (TID 67) (172.19.0.5, executor 0, partition 67, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:25 INFO TaskSetManager: Finished task 64.0 in stage 0.0 (TID 64) in 203 ms on 172.19.0.5 (executor 0) (66/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 68.0 in stage 0.0 (TID 68) (172.19.0.5, executor 0, partition 68, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 66.0 in stage 0.0 (TID 66) in 197 ms on 172.19.0.5 (executor 0) (67/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 69.0 in stage 0.0 (TID 69) (172.19.0.5, executor 0, partition 69, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 67.0 in stage 0.0 (TID 67) in 187 ms on 172.19.0.5 (executor 0) (68/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 70.0 in stage 0.0 (TID 70) (172.19.0.5, executor 0, partition 70, PROCESS_LOCAL, 14206 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 69.0 in stage 0.0 (TID 69) in 100 ms on 172.19.0.5 (executor 0) (69/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 71.0 in stage 0.0 (TID 71) (172.19.0.5, executor 0, partition 71, PROCESS_LOCAL, 14205 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 68.0 in stage 0.0 (TID 68) in 108 ms on 172.19.0.5 (executor 0) (70/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 72.0 in stage 0.0 (TID 72) (172.19.0.5, executor 0, partition 72, PROCESS_LOCAL, 14202 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 70.0 in stage 0.0 (TID 70) in 108 ms on 172.19.0.5 (executor 0) (71/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 73.0 in stage 0.0 (TID 73) (172.19.0.5, executor 0, partition 73, PROCESS_LOCAL, 14202 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 71.0 in stage 0.0 (TID 71) in 126 ms on 172.19.0.5 (executor 0) (72/75)
+26/11/20 17:23:26 INFO TaskSetManager: Starting task 74.0 in stage 0.0 (TID 74) (172.19.0.5, executor 0, partition 74, PROCESS_LOCAL, 14191 bytes) 
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 72.0 in stage 0.0 (TID 72) in 117 ms on 172.19.0.5 (executor 0) (73/75)
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 73.0 in stage 0.0 (TID 73) in 177 ms on 172.19.0.5 (executor 0) (74/75)
+26/11/20 17:23:26 INFO TaskSetManager: Finished task 74.0 in stage 0.0 (TID 74) in 181 ms on 172.19.0.5 (executor 0) (75/75)
+26/11/20 17:23:26 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+26/11/20 17:23:26 INFO DAGScheduler: ResultStage 0 (collect at /workspace/src/reconciliation/reconcile.py:29) finished in 13.192 s
+26/11/20 17:23:26 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/11/20 17:23:26 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+26/11/20 17:23:26 INFO DAGScheduler: Job 0 finished: collect at /workspace/src/reconciliation/reconcile.py:29, took 13.599982 s
+26/11/20 17:23:27 INFO SparkContext: SparkContext is stopping with exitCode 0.
+26/11/20 17:23:27 INFO StandaloneSchedulerBackend: Shutting down all executors
+26/11/20 17:23:27 INFO StandaloneSchedulerBackend$StandaloneDriverEndpoint: Asking each executor to shut down
+26/11/20 17:23:27 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/11/20 17:23:27 INFO MemoryStore: MemoryStore cleared
+26/11/20 17:23:27 INFO BlockManager: BlockManager stopped
+26/11/20 17:23:27 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/11/20 17:23:27 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/11/20 17:23:27 INFO SparkContext: Successfully stopped SparkContext
+I1_I2_RECONCILIATION {"I1_completeness":{"expected_recording_count":300,"missing_count":0,"missing_ids":[],"missing_rate":0.0,"passed":true},"I2_uniqueness":{"duplicate_ids_and_row_counts":{},"duplicate_rate":0.0,"duplicate_recording_count":0,"excess_duplicate_rows":0,"invalid_recording_id_rows":0,"passed":true},"actual_distinct_nonempty_recording_ids":300,"actual_metadata_row_count":300,"all_pass":true,"expected_metadata_path":"/workspace/data/ground_truth/expected_metadata.csv","expected_recording_count":300,"metadata_table":"lab.main.recordings"}
+26/11/20 17:23:27 INFO ShutdownHookManager: Shutdown hook called
+26/11/20 17:23:27 INFO ShutdownHookManager: Deleting directory /tmp/spark-be0823dd-49ef-48bc-9692-12b4f3d5cd2f
+26/11/20 17:23:27 INFO ShutdownHookManager: Deleting directory /tmp/spark-d7deba1d-9063-456a-88ea-efcdb6d5e917/pyspark-53c92e50-3b08-4457-bbe3-b33faf4a1942
+26/11/20 17:23:27 INFO ShutdownHookManager: Deleting directory /tmp/spark-d7deba1d-9063-456a-88ea-efcdb6d5e917

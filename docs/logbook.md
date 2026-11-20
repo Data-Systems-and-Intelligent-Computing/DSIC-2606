@@ -564,6 +564,6 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 ### Hari 10 — Reconciliation metadata I1–I2 — 21 November 2026
 
 - **Implementasi lokal:** ditambahkan evaluator completeness dan uniqueness. I1 membandingkan ID ground truth dengan ID pada tabel dan melaporkan missing count/rate. I2 melaporkan jumlah ID logis yang duplikat, kelebihan baris duplikat, dan baris dengan `recording_id` kosong. Ground truth kosong atau memiliki ID duplikat ditolak.
-- **Eksekusi Spark disiapkan:** `src/reconciliation/reconcile.py` membaca `data/ground_truth/expected_metadata.csv`, mengambil `recording_id` dari tabel Iceberg, mencetak satu ringkasan JSON `I1_I2_RECONCILIATION`, dan keluar bukan nol jika salah satu invariant gagal. Belum dijalankan terhadap tabel P1/F0 di Lightsail.
+- **Audit Spark P1/F0 di Lightsail:** dijalankan terhadap `lab.main.recordings`; proses Spark berhenti dengan exit code 0. Ringkasan `I1_I2_RECONCILIATION` menyatakan `all_pass=true`: 300 ID yang diharapkan, 300 baris metadata aktual, 300 ID unik, 0 ID hilang, 0 duplikat, dan 0 baris dengan ID kosong.
 - **Test lokal:** `python -m unittest discover tests -v` lulus: 51 test, 0 gagal, kode keluar 0. Test baru mencakup keadaan lulus, missing ID, metadata duplikat, dan ID aktual kosong. Keluaran tersimpan di `docs/evidence/unittest-20261121-reconciliation-i1-i2-local.txt`.
-- **Batas bukti:** ini baru validasi fungsi rekonsiliasi lokal; hasil audit tabel Iceberg P1/F0 di VM masih harus dijalankan dan disimpan.
+- **Bukti VM:** log audit mentah tersimpan di `docs/evidence/reconciliation-i1-i2-p1-f0-20261121.log` (33.166 byte).
