@@ -560,3 +560,10 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **P1/F0 di Lightsail:** `RUN_ID=p1-f0-20261120`, kode keluar 0. Konfigurasi efektif mencatat idempotence aktif dan checkpoint `/checkpoints/persistent/p1-f0-20261120/P1`. Guard mencatat 300 PUT dan 0 `SUDAH ADA`; MERGE metadata tercatat 300 kali. Rekonsiliasi melaporkan 300 objek, 300 baris metadata, dan 300 ID unik. Pemeriksa batch menyatakan 30 batch × 10 ID cocok; multipart memeriksa 300 objek dan menemukan 0 multipart. Direktori checkpoint persistent ada dan berisi 30 commit bernomor.
 - **Bukti mentah:** `docs/evidence/p1-f0-20261120.log`, `verify-batches-p1-f0-20261120.txt`, `verify-multipart-p1-f0-20261120.log`, dan `checkpoint-p1-f0-20261120.txt`.
 - **Batas bukti:** P1/F0 dan isolasi treatment pada konfigurasi sudah dibuktikan. Perilaku B2/P1 saat fault/restart serta rekonsiliasi I1–I2 masih perlu dikerjakan.
+
+### Hari 10 — Reconciliation metadata I1–I2 — 21 November 2026
+
+- **Implementasi lokal:** ditambahkan evaluator completeness dan uniqueness. I1 membandingkan ID ground truth dengan ID pada tabel dan melaporkan missing count/rate. I2 melaporkan jumlah ID logis yang duplikat, kelebihan baris duplikat, dan baris dengan `recording_id` kosong. Ground truth kosong atau memiliki ID duplikat ditolak.
+- **Eksekusi Spark disiapkan:** `src/reconciliation/reconcile.py` membaca `data/ground_truth/expected_metadata.csv`, mengambil `recording_id` dari tabel Iceberg, mencetak satu ringkasan JSON `I1_I2_RECONCILIATION`, dan keluar bukan nol jika salah satu invariant gagal. Belum dijalankan terhadap tabel P1/F0 di Lightsail.
+- **Test lokal:** `python -m unittest discover tests -v` lulus: 51 test, 0 gagal, kode keluar 0. Test baru mencakup keadaan lulus, missing ID, metadata duplikat, dan ID aktual kosong. Keluaran tersimpan di `docs/evidence/unittest-20261121-reconciliation-i1-i2-local.txt`.
+- **Batas bukti:** ini baru validasi fungsi rekonsiliasi lokal; hasil audit tabel Iceberg P1/F0 di VM masih harus dijalankan dan disimpan.

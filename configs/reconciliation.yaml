@@ -1,0 +1,13 @@
+reconciliation:
+  expected_metadata_path: "data/ground_truth/expected_metadata.csv"
+  metadata_table: "lab.main.recordings"
+  invariants:
+    I1:
+      name: "completeness"
+      definition: "Every expected recording_id has at least one metadata row"
+      denominator: "unique expected recording_id count"
+    I2:
+      name: "uniqueness"
+      definition: "Every recording_id has at most one metadata row"
+      duplicate_metric: "count of recording_id values with row_count > 1"
+      also_report: "excess duplicate rows and rows with empty recording_id"
