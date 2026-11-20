@@ -1,0 +1,36 @@
+test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces (test_claim_language.ClaimLanguageTests) ... ok
+test_expected_metadata_cocok_dengan_manifest (test_expected_metadata_consistency.ExpectedMetadataConsistencyTests) ... ok
+test_perubahan_hash_di_salina_dideteksi (test_expected_metadata_consistency.ExpectedMetadataConsistencyTests) ... ok
+test_nama_timestamp_invalid_ditolak_tanpa_membuat_manifest (test_generate_manifest_invalid_filename.GenerateManifestInvalidFilenameTests) ... ok
+test_effective_configs_must_differ_only_at_checkpoint (test_ingestion_log_verifiers.IngestionLogVerifierTests) ... ok
+test_replay_log_must_match_frozen_batches (test_ingestion_log_verifiers.IngestionLogVerifierTests) ... ok
+test_replay_log_rejects_wrong_batch_membership (test_ingestion_log_verifiers.IngestionLogVerifierTests) ... ok
+test_frozen_main_batch_and_replay_files_agree (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_metadata_table_must_be_in_lab_catalog (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_object_target_rejects_non_s3_and_empty_key (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_object_target_splits_bucket_and_key (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_prepare_upload_record_uses_manifest_identity_and_threshold (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_process_event_puts_each_object_before_its_metadata_commit (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_process_event_rejects_wrong_spark_order_before_any_write (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_source_path_maps_only_main_manifest_files_to_mount (test_ingestion_preparation.IngestionPreparationTests) ... ok
+test_duplikat_recording_id_ditolak (test_manifest_integrity.ManifestIntegrityTests) ... ok
+test_recording_id_kosong_dan_hash_kosong_atau_invalid_ditolak (test_manifest_integrity.ManifestIntegrityTests) ... ok
+test_semua_manifest_memiliki_id_unik_dan_hash_valid (test_manifest_integrity.ManifestIntegrityTests) ... ok
+test_published_event_mtimes_increase_with_batch_order (test_source_replay.ReplayFeederTests) ... ok
+test_publishes_only_the_next_event_after_completion (test_source_replay.ReplayFeederTests) ... ok
+test_rejects_a_gap_in_source_event_numbers (test_source_replay.ReplayFeederTests) ... ok
+test_rejects_event_with_wrong_id_count (test_source_replay.ReplayFeederTests) ... ok
+test_restart_preserves_published_events_and_waits_for_latest (test_source_replay.ReplayFeederTests) ... ok
+test_manifest_identity_uri_dan_utc_konsisten (test_stable_recording_id.StableRecordingIdentityTests) ... ok
+test_naive_timestamp_digagalkan (test_stable_recording_id.StableRecordingIdentityTests) ... ok
+test_b0_and_b1_differ_only_by_checkpoint_location (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_b0_resolves_to_ephemeral_path (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_b1_requires_a_persistent_root_and_resolves_per_run (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_checkpoint_roots_match_instrument (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+test_idempotence_is_off_for_both_treatments (test_treatment_isolation.TreatmentIsolationConfigTests) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 1.078s
+
+OK
+exit_code=0

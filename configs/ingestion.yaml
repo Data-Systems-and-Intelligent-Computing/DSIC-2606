@@ -23,4 +23,11 @@ ingestion:
     max_files_per_trigger: 1
     batches: 30
     recordings_per_batch: 10
-  status: "implementation_ready_for_lab_pilot; Spark F0 not yet run"
+  status: "B0_F0_and_B1_F0_completed_on_Lightsail; 300_objects_and_300_metadata_rows_each"
+  evidence:
+    b0_f0: "docs/evidence/b0-f0-20261120.md"
+    b1_f0: "docs/evidence/b1-f0-20261120.md"
+    effective_config_comparison: "docs/evidence/compare-configs-b0-b1-20261120.txt"
+    batch_verification:
+      b0_f0: "docs/evidence/verify-batches-b0-f0-20261120.txt"
+      b1_f0: "docs/evidence/verify-batches-b1-f0-20261120.txt"

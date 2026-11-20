@@ -1,0 +1,32 @@
+=== Sinkronisasi repo Hari 1 ===
+## main...origin/main [behind 1]
+?? scripts/__pycache__/
+?? src/__pycache__/
+?? src/checkpointing/__pycache__/
+?? src/ingestion/__pycache__/
+?? tests/__pycache__/
+?? verify_corpus.py
+Updating c3a74dc..c09b2f7
+Fast-forward
+ docs/evidence/b0-f0-checkpoint-20261120.log        | 16989 +++++++++++++++++++
+ docs/evidence/b0-restart-checkpoint-20261120.log   | 16433 ++++++++++++++++++
+ docs/evidence/check-before-b0-restart-20261120.log |     2 +
+ docs/evidence/checkpoint-b0-restart-20261120.md    |    25 +
+ .../checkpoint-b0-restart-summary-20261120.txt     |    14 +
+ .../reset-before-b0-checkpoint-20261120-retry.log  |    10 +
+ docs/logbook.md                                    |    10 +
+ 7 files changed, 33483 insertions(+)
+ create mode 100644 docs/evidence/b0-f0-checkpoint-20261120.log
+ create mode 100644 docs/evidence/b0-restart-checkpoint-20261120.log
+ create mode 100644 docs/evidence/check-before-b0-restart-20261120.log
+ create mode 100644 docs/evidence/checkpoint-b0-restart-20261120.md
+ create mode 100644 docs/evidence/checkpoint-b0-restart-summary-20261120.txt
+ create mode 100644 docs/evidence/reset-before-b0-checkpoint-20261120-retry.log
+## main...origin/main
+?? scripts/__pycache__/
+?? src/__pycache__/
+?? src/checkpointing/__pycache__/
+?? src/ingestion/__pycache__/
+?? tests/__pycache__/
+?? verify_corpus.py
+c09b2f7 docs: record B0 ephemeral checkpoint replay evidence

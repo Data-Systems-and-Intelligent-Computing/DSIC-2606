@@ -1,0 +1,44 @@
+Claim-language guard verification — 2026-11-20
+
+1) Normal repository state (expected exit 0)
+test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces (test_claim_language.ClaimLanguageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.230s
+
+OK
+exit_code=0
+
+2) Temporary forbidden phrase in paper/ (expected nonzero exit)
+test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces (test_claim_language.ClaimLanguageTests) ... FAIL
+
+======================================================================
+FAIL: test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces (test_claim_language.ClaimLanguageTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\TA\code TA\DSIC-2606\tests\test_claim_language.py", line 35, in test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces
+    self.assertEqual(
+AssertionError: Lists differ: ['paper\\_claim-language-probe.md:1: unsupported exactly-once marker'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'paper\\_claim-language-probe.md:1: unsupported exactly-once marker'
+
+- ['paper\\_claim-language-probe.md:1: unsupported exactly-once marker']
++ [] : Unsupported exactly-once wording found:
+paper\_claim-language-probe.md:1: unsupported exactly-once marker
+
+----------------------------------------------------------------------
+Ran 1 test in 0.098s
+
+FAILED (failures=1)
+exit_code=1
+
+3) After removing temporary probe (expected exit 0)
+test_unsupported_exactly_once_claim_is_absent_from_claim_surfaces (test_claim_language.ClaimLanguageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.065s
+
+OK
+exit_code=0

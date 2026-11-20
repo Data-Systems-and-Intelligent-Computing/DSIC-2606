@@ -1,0 +1,9 @@
+docker compose --env-file versions.env --env-file .env up -d minio minio-init catalog spark-master spark-worker
+ Container dsic2606-minio-1 Running 
+ Container dsic2606-catalog-1 Running 
+ Container dsic2606-spark-master-1 Running 
+ Container dsic2606-spark-worker-1 Running 
+ Container dsic2606-minio-1 Waiting 
+ Container dsic2606-minio-1 Healthy 
+ Container dsic2606-minio-init-1 Starting 
+ Container dsic2606-minio-init-1 Started 

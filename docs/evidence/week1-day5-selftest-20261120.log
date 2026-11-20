@@ -1,0 +1,74 @@
+dsic-lab-lock 2606 -- ./scripts/selftest.sh
+=== T0 prasyarat: keadaan awal bersih dan lingkungan cocok dengan lock
+[LULUS] T0a reset --verify-only pada keadaan bersih
+[LULUS] T0b capture_env --check pada lingkungan utuh
+[LULUS] T0c preflight pada korpus asli
+=== T0d keadaan sesudah uji asap tetap dinilai bersih (regresi cacat 2026-10-08)
+[LULUS] T0d smoke lalu reset --verify-only
+=== T1 lock lingkungan menangkap batas sumber daya yang diubah
+[LULUS] T1 check gagal saat memori worker 3g (lock: 4g)
+        > spark-worker | 1500000000 | 4294967296
+        PEMERIKSAAN GAGAL: lingkungan berbeda dari environment.lock.txt (selisih di atas)
+[LULUS] T1b check lulus lagi setelah dikembalikan
+=== T2 reset menangkap sisa objek, sisa checkpoint, dan sisa tabel katalog
+[LULUS] T2a verify-only gagal dengan 1 objek tersisa
+        warehouse 0
+        RESET GAGAL: masih ada objek di MinIO
+[LULUS] T2b reset penuh membersihkannya
+[LULUS] T2c verify-only gagal dengan sisa checkpoint
+        warehouse 0
+        RESET GAGAL: checkpoint persistent tersisa
+[LULUS] T2f verify-only gagal dengan sisa event replay
+        warehouse 0
+        RESET GAGAL: event replay tersisa di landing
+[LULUS] T2d verify-only gagal dengan satu entri katalog tersisa
+        warehouse 0
+        RESET GAGAL: katalog Iceberg masih memuat 1 entri (tabel atau namespace)
+[LULUS] T2e reset penuh membersihkannya
+=== T3 pemeriksa multipart
+[LULUS] T3a tanpa objek: tidak boleh menyatakan lulus (kode 2)
+        objek multipart: 0 (harus 0)
+        
+[LULUS] T3b objek single-part 3.520.800 byte: lulus
+[LULUS] T3c objek multipart 6 MiB: terdeteksi
+          _uji_instrumen/multipart.bin "7d368e72ecdd3ff1d9b28f29481a125f-2"
+        
+=== T4 preflight menolak korpus yang berubah (pada SALINAN)
+[LULUS] T4a salinan utuh: preflight lulus
+[LULUS] T4b satu byte ditambahkan ke 20260924_133000.WAV: preflight gagal (a)
+        
+        PREFLIGHT GAGAL (a): isi korpus berbeda dari corpus.sha256
+[LULUS] T4c satu berkas asing ditambahkan: preflight gagal (b)
+        
+        PREFLIGHT GAGAL (b): jumlah berkas WAV tidak sama dengan jumlah baris corpus.sha256
+=== T5 arti checkpoint: ephemeral hilang bersama kontainer, persistent selamat
+[LULUS] T5a kontainer baru: penanda persistent MASIH ADA
+[LULUS] T5b kontainer baru: penanda ephemeral SUDAH HILANG
+         Container dsic2606-driver-run-72e59d2ea0a5 Created 
+        
+[LULUS] T5c ephemeral memang tmpfs
+=== T10 landing replay: ditulis driver, selamat dari kematian driver, terbaca worker, tidak bisa ditulis worker (W-025)
+[LULUS] T10a kontainer driver baru: event MASIH ADA
+[LULUS] T10b worker membaca event pada path yang sama
+[LULUS] T10c worker tidak dapat menulis ke landing
+        touch: cannot touch '/data/replay/_st/_tulis': Read-only file system
+=== T6 harness kill: SIGKILL pada sasaran yang ditunjuk penanda, tercatat
+[LULUS] T6a kontainer sasaran mati dengan kode 137 (SIGKILL)
+[LULUS] T6b sasaran tercatat di harness.log
+        kill_target=drv-selftest-102904-a1
+        kill_container_id=9d8d0d3b867d
+        kill_time_utc=2026-11-20T10:29:08.874Z
+        marker_target=drv-selftest-102904-a1
+        marker_fault_point=SELFTEST
+        marker_batch_id=0
+[LULUS] T6c sasaran tidak ditemukan: harness keluar bukan 0
+=== T7 uji asap gagal bila MinIO mati
+[LULUS] T7 smoke gagal tanpa MinIO
+        26/11/20 10:30:00 INFO ShutdownHookManager: Deleting directory /tmp/spark-b77029c0-1a32-4cc8-a908-115a8b63f700
+        
+=== T9 lock tetap cocok setelah semua kontainer dihapus dan dibuat ulang (regresi cacat W-007)
+[LULUS] T9 down lalu up: check tetap lulus
+=== penutup: kembalikan dan buktikan bersih
+[LULUS] T8a keadaan akhir bersih
+[LULUS] T8b lingkungan akhir cocok dengan lock
+SELFTEST: lulus=31 gagal=0

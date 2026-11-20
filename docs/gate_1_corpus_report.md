@@ -1,6 +1,6 @@
 # Laporan Korpus Eksperimen — Fase 1
 
-**Status korpus: Beku.** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di Lightsail, uji negatif verifier, checksum korpus, serta metadata acuan. Status ini menyatakan bahwa seleksi dan isi subset telah dibekukan; Gate Minggu 1 secara keseluruhan masih menunggu penyelesaian bukti implementasi B0/B1 dan commit final.
+**Status korpus: Beku. Status Gate Minggu 1: belum diaudit/ditutup.** Laporan ini merangkum pemilihan subset Main, manifest dan urutan batch, pencocokan terhadap salinan di Lightsail, uji negatif verifier, checksum korpus, metadata acuan, serta bukti B0/B1 F0. Penutupan gate masih menunggu keputusan pembimbing D-03 untuk RQ v1 dan pengumpulan paket bukti akhir.
 
 ## Ruang Lingkup
 
@@ -52,7 +52,7 @@ Konfirmasi pembimbing pada 23 September 2026 menyatakan waktu perangkat saat per
 
 ## Urutan Batch dan Micro-batch
 
-`data/batches/batch_order_main.csv` berisi 300 penempatan rekaman dalam **30 batch**, masing-masing tepat 10 rekaman. Ini adalah urutan batch yang dibekukan untuk eksperimen. Jumlah tersebut **bukan** bukti jumlah micro-batch Spark aktual; konfigurasi dan keluaran micro-batch Spark belum diverifikasi.
+`data/batches/batch_order_main.csv` berisi 300 penempatan rekaman dalam **30 batch**, masing-masing tepat 10 rekaman. Keluaran pemeriksa pada log B0/F0 dan B1/F0 masing-masing menyatakan `30 batch x 10 ID COCOK dengan batch_order_main.csv`; bukti tersimpan di `docs/evidence/verify-batches-b0-f0-20261120.txt` dan `docs/evidence/verify-batches-b1-f0-20261120.txt`.
 
 ## Verifikasi Korpus di VM
 
@@ -92,12 +92,30 @@ Aturan perbandingan kolom dan pemetaan invarian I1–I7 dicatat di [`correctness
 
 ## Hasil Test
 
-Pada 7 Oktober 2026, perintah `python -m unittest discover -s tests -v` melaporkan `Ran 9 tests in 0.180s` dan `OK` (9 lulus, 0 gagal). Ini adalah keluaran yang dilaporkan pengguna. Perubahan sesudahnya hanya memperbarui catatan waktu VM di dokumentasi; tidak ada perubahan kode atau konfigurasi setelah test tersebut.
+Pada 20 November 2026, setelah penambahan uji bahasa klaim dan uji negatif integritas manifest, `python -m unittest discover tests -v` melaporkan `Ran 30 tests in 1.078s` dan `OK` (30 lulus, 0 gagal; kode keluar 0). Keluaran aktual disimpan di `docs/evidence/unittest-gate-week1-20261120.txt`. Uji bahasa klaim juga diuji dengan frasa terlarang sementara: test gagal dengan kode 1 saat frasa ada dan lulus lagi setelah probe dihapus; keluaran tersimpan di `docs/evidence/claim-language-20261120.txt`.
 
-## Sisa Pekerjaan Sebelum Gate 1 Ditutup
+## Status butir Gate Minggu 1
 
-- Jalankan dan catat uji khusus yang membuktikan generator manifest berhenti dengan galat ketika nama file tidak dapat diurai sebagai timestamp.
-- Pastikan `corpus.sha256`, empat salinan `CONFIG.TXT`, skema, expected metadata, manifest, batch order, laporan, dan logbook masuk ke commit yang sama.
-- Hasil pembuatan expected metadata, provenance perangkat, dan konfirmasi status VM `TERMINATED` pada 2026-10-07 01:25:22 +07:00 telah dicatat di logbook.
-- Catat hash commit final saat mengirim bukti Fase 1 kepada pembimbing.
-- Status korpus pada laporan telah ditetapkan **Beku** setelah ringkasan skrip dan pemeriksaan korpus Lightsail cocok dengan nilai acuan. Gate Minggu 1 belum dinyatakan selesai; bukti implementasi dan eksekusi B0/B1 serta hash commit final masih diperlukan.
+| # | Kriteria | Status berdasarkan bukti repo saat ini |
+|---:|---|---|
+| 1 | RQ, sub-RQ, batas publikasi, dan logbook | **Menunggu D-03.** `docs/rq-v1.md` dan batas publikasi sudah disiapkan sebagai DRAFT; pembimbing belum menetapkan versi final. |
+| 2 | Korpus beku, cocok di Lightsail, SHA-256 lengkap | **Lulus di Lightsail:** pemeriksaan ulang 20 November menunjukkan 300/300 cocok, 0 berkas hilang/berlebih/tidak cocok, dan SHA-256 exit 0. Keluaran mentah telah disalin ke `docs/evidence/week1-day2-corpus-20261120.log`. |
+| 3 | Urutan masukan dan komposisi batch beku | **Lulus:** 30 batch × 10 ID cocok pada B0/F0 dan B1/F0. |
+| 4 | Angka korpus dilaporkan | **Lulus:** statistik dihitung skrip dan dicatat pada laporan ini. |
+| 5 | Minimal 10 micro-batch | **Lulus:** 30 micro-batch pada B0/F0 dan B1/F0. |
+| 6 | Aturan `recording_id` dan `expected_object_uri` dibekukan | **Lulus:** aturan dicatat pada `docs/correctness-invariants.md` dan diuji terhadap manifest. |
+| 7 | Uji stabilitas identitas termasuk kasus negatif | **Lulus:** test identitas konsisten; timestamp tanpa zona waktu ditolak. |
+| 8 | Tidak ada ID duplikat atau SHA-256 kosong/invalid, termasuk uji negatif | **Lulus lokal:** test integritas manifest memeriksa empat manifest dan menolak ID duplikat, ID kosong, hash kosong, serta hash invalid. |
+| 9 | Versi dan batas sumber daya dibekukan | **Lulus di Lightsail:** `make check` cocok dengan `environment.lock.txt`; self-test 31/31 mencakup pemeriksaan lock, reset, preflight, dan batas sumber daya. Keluaran Hari 5 tersimpan di `docs/evidence/week1-day5-*.log`. |
+| 10 | Ambang multipart diverifikasi dengan WAV eksperimen | **Lulus:** B0/F0 dan B1/F0 masing-masing memeriksa 300 objek dan melaporkan 0 multipart; klien dan ambang dicatat di `configs/environment.yaml`. |
+| 11 | B0/B1 berjalan F0, beda satu kunci, perilaku checkpoint terbukti | **Lulus:** kedua F0 300 objek/300 baris; log efektif beda hanya `checkpoint_location`; bukti restart B0 dan B1 ada. |
+| 12 | B0 baseline wajar, bukan sengaja dilemahkan | **Lulus:** paragraf ada di `docs/treatment-semantics.md`, commit `b98358f` mendahului eksekusi F0. |
+
+## Yang masih diperlukan untuk penutupan
+
+- Keputusan pembimbing D-03 untuk menetapkan RQ v1; jangan menghapus status DRAFT sebelum ada keputusan.
+- Keluaran mentah Hari 1 dan Hari 2 sudah disalin ke `docs/evidence/`; rincian snapshot, sinkronisasi repo, serta verifikasi korpus tercatat di logbook.
+- RQ v1 tetap DRAFT sampai keputusan D-03 diterima.
+- Buat commit yang memuat dokumen, test, konfigurasi, laporan dan bukti terbaru; kirim hash commit beserta paket bukti untuk audit Gate Minggu 1.
+
+Gate Minggu 1 **belum dinyatakan lulus** sampai keputusan D-03 dan audit pembimbing diterima. Status ini tidak mengurangi hasil eksperimen B0/B1 F0 yang sudah tercatat.

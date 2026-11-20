@@ -497,4 +497,39 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Restart attempt 2:** driver baru dijalankan dengan treatment dan RUN_ID sama, tanpa reset. Log menunjukkan 30 batch replay dan 300 append metadata. Audit F0 melaporkan `expected 300, found 600`, sehingga attempt keluar dengan kode 1. Ini hasil yang diharapkan untuk B0 tanpa checkpoint persisten dan tanpa idempotence: objek pada key yang sama tertimpa, sedangkan metadata append terduplikasi.
 - **Pemeriksaan sesudah restart:** MinIO melaporkan 300 objek di `audiomoth` dan 2.401 objek di `warehouse`; angka warehouse menghitung berkas objek Iceberg, bukan baris metadata. Audit melaporkan 600 baris metadata. Direktori B0 tidak ada di akar checkpoint persisten `/data/state/checkpoints`; konfigurasi run menunjukkan checkpoint B0 berada pada tmpfs ephemeral driver.
 - **Bukti mentah:** log initial run, log restart, ringkasan pemeriksaan checkpoint, log reset ulang, dan log pemeriksaan lock disimpan di `docs/evidence/`.
-- **Status Fase 3:** perilaku checkpoint B0 setelah driver baru kini teramati dan cocok dengan sifat ephemeral. Bersama bukti B1 persisten yang telah dicatat sebelumnya, butir checkpoint restart sudah diuji. Keadaan lab kini berisi hasil restart B0 yang terduplikasi; jalankan reset terkontrol setelah bukti lokal dan logbook disimpan, sebelum eksperimen independen berikutnya.
+- **Status Fase 3:** perilaku checkpoint B0 setelah driver baru kini teramati dan cocok dengan sifat ephemeral. Bersama bukti B1 persisten yang telah dicatat sebelumnya, butir checkpoint restart sudah diuji. Tepat setelah run ini, hasil restart B0 masih berada di sink; keadaan tersebut kemudian dibersihkan dan self-test Hari 5 memastikan kembali keadaan akhir bersih (lihat entri Hari 5).
+
+### RQ v1 untuk Gate Minggu 1 — 20 November 2026
+
+- **Kegiatan:** menyusun `docs/rq-v1.md` dengan RQ1–RQ5 dan hipotesis H1–H4 berdasarkan bagian *Research Question* dan *Hipotesis* di `README.md`.
+- **Perbandingan dokumen:** perbedaan dengan rumusan yang masih ada di `paper/manuscript.md` dicatat di dokumen RQ agar dapat ditinjau, tanpa mengubah manuskrip.
+- **Batas publikasi:** `docs/publication-boundary.md` dilengkapi dengan enam klaim yang tidak dibuat dan cakupan Gate Minggu 1. Dokumen tetap berstatus draf sambil menunggu keputusan D-03.
+- **Uji bahasa klaim:** `tests/test_claim_language.py` memindai `src/`, `paper/`, dan `results/` untuk frasa `exactly-once` atau `exactly once`. Test lulus pada isi repo, gagal dengan kode 1 ketika frasa terlarang sementara ditambahkan ke `paper/`, lalu lulus lagi setelah berkas probe dihapus. Keluaran asli tersimpan di `docs/evidence/claim-language-20261120.txt`.
+- **Suite lengkap:** `python -m unittest discover tests -v` lulus: 30 test, 0 gagal, kode keluar 0. Keluaran aktual pada revisi ini tersimpan di `docs/evidence/unittest-gate-week1-20261120.txt`; validasi parse YAML untuk `configs/environment.yaml` dan `configs/ingestion.yaml` juga lulus.
+- **Status:** RQ belum dibekukan; keputusan pembimbing D-03 masih menunggu. Tidak ada klaim hasil eksperimen baru.
+
+### Hari 5 — Pemeriksaan lingkungan dan self-test di Lightsail — 20 November 2026
+
+- **Status lock sebelum pemeriksaan:** `dsic-lab-lock --status` menghasilkan `bebas`.
+- **Layanan:** `sudo make up` selesai; MinIO berstatus `healthy`, katalog `healthy`, Spark master dan worker `Up`. Keluaran `sudo make ps` disimpan bersama bukti Hari 5.
+- **Lock lingkungan:** `sudo make check` menghasilkan `lingkungan sama dengan environment.lock.txt`.
+- **Self-test:** koneksi SSH terputus ketika keluaran sedang berada di T7. Setelah masuk kembali, tidak ada proses self-test aktif dan lock berstatus `bebas`; log yang tersimpan menunjukkan test berlanjut sampai penutup. Hasil akhir: `SELFTEST: lulus=31 gagal=0`. Self-test tidak dijalankan ulang.
+- **Cakupan yang terlihat pada keluaran:** reset bersih dan preflight lulus; uji negatif reset mendeteksi objek, checkpoint, event replay, dan entri katalog tersisa; uji multipart instrumen lulus; preflight menolak korpus salinan yang berubah atau berkas asing; perilaku checkpoint ephemeral/persistent dan mount replay diuji; harness SIGKILL dan smoke test saat MinIO mati lulus; akhir test bersih dan lock cocok.
+- **Bukti mentah Lightsail:** `docs/evidence/week1-day5-up-20261120.log`, `week1-day5-ps-20261120.log`, `week1-day5-check-20261120.log`, dan `week1-day5-selftest-20261120.log`.
+
+### Hari 2 — Konfirmasi ulang korpus beku di Lightsail — 20 November 2026
+
+- **Waktu pemeriksaan:** `2026-11-20T10:49:24+00:00`.
+- **Korpus:** `/data/corpus/main` berisi 300 berkas WAV dan 0 berkas dengan bit tulis untuk pemilik.
+- **Verifikasi manifest:** `python3 verify_corpus.py data/manifests/manifest_main.csv /data/corpus/main` melaporkan 300 baris manifest, 300 berkas di disk, 0 hilang, 0 berlebih, 0 tidak cocok; `HASIL: COCOK`, kode keluar 0.
+- **Verifikasi SHA-256:** `sha256sum -c --quiet` terhadap `data/manifests/corpus.sha256` berakhir dengan kode keluar 0.
+- **Bukti mentah:** keluaran disimpan di VM pada `/data/results/week1-day2-corpus-20261120.log`, lalu disalin ke `docs/evidence/week1-day2-corpus-20261120.log` di repo lokal pada 20 November 2026. Ukuran berkas lokal 228 byte.
+
+### Hari 1 — Snapshot lingkungan dan repo Lightsail — 20 November 2026
+
+- **Waktu pemeriksaan:** `2026-11-20T10:57:20+00:00`; SSH masuk memakai akun `vania`.
+- **Mesin:** `t3.xlarge`, `ap-southeast-2`, Ubuntu 24.04.4 LTS, kernel `7.0.0-1012-aws`, 4 vCPU, Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz; `dsic-lab-lock --status` menghasilkan `bebas`.
+- **Memori dan disk saat diperiksa:** 15 GiB terdeteksi oleh `free -h`; `/dev/root` berukuran 309 GiB dengan 279 GiB tersedia. Nilai ini merupakan snapshot sesi, bukan spesifikasi tetap untuk seluruh eksperimen.
+- **Repo sebelum sinkronisasi:** branch `main` di `c3a74dc`, status `behind 1`; ada berkas tak terlacak `verify_corpus.py` dan cache Python. Berkas tak terlacak dipertahankan.
+- **Sinkronisasi repo:** `git pull --ff-only` berhasil fast-forward dari `c3a74dc` ke `c09b2f7`. Sesudahnya branch `main` sejajar dengan `origin/main`. Berkas tak terlacak `verify_corpus.py` dan cache Python tetap ada serta tidak diubah.
+- **Bukti mentah:** snapshot awal tersimpan di VM pada `/data/results/week1-day1-lightsail-20261120.log`, lalu disalin ke `docs/evidence/week1-day1-lightsail-20261120.log` (1.560 byte). Keluaran pull/status akhir tersimpan di `/data/results/week1-day1-sync-20261120.log`, lalu disalin ke `docs/evidence/week1-day1-sync-20261120.log` (1.424 byte). Penyalinan diverifikasi dengan `Get-ChildItem` di PowerShell pada 20 November 2026.

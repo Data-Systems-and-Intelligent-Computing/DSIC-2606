@@ -1,0 +1,7 @@
+docker compose --env-file versions.env --env-file .env ps -a
+NAME                      IMAGE                                                                                   COMMAND                  SERVICE        CREATED       STATUS                  PORTS
+dsic2606-catalog-1        postgres:16.4@sha256:e62fbf9d3e2b49816a32c400ed2dba83e3b361e6833e624024309c35d334b412   "docker-entrypoint.s…"   catalog        3 hours ago   Up 3 hours (healthy)    5432/tcp
+dsic2606-minio-1          dsic-lab/minio:RELEASE.2025-04-22T22-12-26Z                                             "/usr/local/bin/mini…"   minio          3 hours ago   Up 3 hours (healthy)    127.0.0.1:9000-9001->9000-9001/tcp
+dsic2606-minio-init-1     dsic-lab/spark:3.5.3-iceberg1.6.1                                                       "python3 /opt/lab/sc…"   minio-init     3 hours ago   Up Less than a second   
+dsic2606-spark-master-1   dsic-lab/spark:3.5.3-iceberg1.6.1                                                       "/opt/entrypoint.sh …"   spark-master   3 hours ago   Up 3 hours              
+dsic2606-spark-worker-1   dsic-lab/spark:3.5.3-iceberg1.6.1                                                       "/opt/entrypoint.sh …"   spark-worker   3 hours ago   Up 3 hours              

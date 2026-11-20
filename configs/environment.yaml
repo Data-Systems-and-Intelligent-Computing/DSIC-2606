@@ -1,14 +1,20 @@
 environment:
+  minio_build:
+    provenance: "compiled_by_lab_from_source; not an official binary"
+    source_commit: "0d7408fc9969caf07de6a8c3a84f9fbb10a6739e"
+    binary_sha256: "b8f3ba2fe46a637f962cfc5c2232b56590924fee94e3388bc0ead60a281204cb"
   multipart:
-    status: "verified_test_profile; experimental_corpus_ingestion_not_run"
-    upload_client: "boto3 S3 client using upload_fileobj and TransferConfig"
+    status: "verified_on_pipeline_B0_F0_and_B1_F0"
+    upload_client: "boto3 S3 client upload_file with TransferConfig"
     client_version: "boto3==1.35.36"
     threshold_bytes: 5242880
     part_size_bytes: 5242880
-    threshold_comparison: "multipart test: 6 MiB payload with 5 MiB multipart_threshold; equality boundary was not tested"
+    threshold_comparison: "Pipeline WAV files are 3,520,800 bytes, below the 5,242,880-byte threshold; post-run checks found 0 multipart objects among 300 objects in each of B0/F0 and B1/F0. Equality boundary was not tested."
     verification_evidence:
-      source: "/data/lab/dsic-lab-stack/scripts/minio_buckets.py"
-      selftest_cases: "T3b single-part 3,520,800-byte object; T3c multipart 6 MiB object detected"
+      pipeline_b0_f0: "docs/evidence/verify-multipart-b0-f0-20261120.log"
+      pipeline_b1_f0: "docs/evidence/verify-multipart-b1-f0-20261120.log"
+      instrument_test_source: "/data/lab/dsic-lab-stack/scripts/minio_buckets.py"
+      instrument_selftest_cases: "T3b single-part 3,520,800-byte object; T3c multipart 6 MiB object detected"
       multipart_test_object_key: "_uji_instrumen/multipart.bin"
       multipart_test_etag: "7d368e72ecdd3ff1d9b28f29481a125f-2"
     test_profiles:
