@@ -564,9 +564,16 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 ### Hari 11 — Implementasi rekonsiliator I3–I5 — 21 November 2026
 
 - **Perubahan:** ditambahkan penilai I3 referential, I4 orphan object, dan I5 dangling metadata. Pembaca metadata mengambil kolom yang diperlukan dari tabel Iceberg; pembaca objek memakai paginator `ListObjectsV2` untuk seluruh halaman pada bucket yang dirujuk ground truth.
-- **Aturan URI:** `s3://` dan `s3a://` dianggap setara; bucket dan object key harus identik. URI salah pada metadata menghasilkan I3 dan I5; objek asal yang tidak lagi dirujuk juga menghasilkan I4. Objek tambahan hanya memicu I4, sedangkan objek yang hilang dengan metadata tersisa hanya memicu I5. Aturan ini dicatat di `docs/correctness-invariants.md`.
+- **Aturan perbandingan:** `s3://` dan `s3a://` dianggap setara; bucket dan object key harus identik. I3 juga membandingkan `device_id`, `file_size_bytes`, `sha256`, dan `start_time` ke ground truth sesuai semantik di `docs/correctness-invariants.md`. URI salah pada metadata menghasilkan I3 dan I5; objek asal yang tidak lagi dirujuk juga menghasilkan I4. Objek tambahan hanya memicu I4, sedangkan objek yang hilang dengan metadata tersisa hanya memicu I5.
 - **Test lokal:** `python -m unittest discover tests -v` lulus: 60 test, kode keluar 0. Test baru memeriksa kasus I3–I5 dan paginasi pembaca objek. Keluaran tersimpan di `docs/evidence/unittest-20261121-i3-i5-local.txt`.
-- **Batas bukti:** implementasi I3–I5 baru diuji lokal. Belum dijalankan pada keadaan P1/F0 di Lightsail; audit VM baca-saja dan uji keadaan rusak masih diperlukan. I6–I7 juga belum diimplementasikan.
+- **Batas bukti saat Hari 11:** implementasi I3–I5 baru diuji lokal; audit VM baca-saja dan uji keadaan rusak masih diperlukan. I6–I7 dikerjakan pada Hari 12.
+
+### Hari 12 — Rekonsiliator I1–I7 dan Exact Recovery — 21 November 2026
+
+- **Perubahan:** ditambahkan I6 yang mengunduh objek acuan yang tercantum di listing dan menghitung SHA-256 aktual per potongan 1 MiB, serta membandingkan ukuran/hash dengan expected metadata. I7 melaporkan recording ID metadata yang tidak terdapat di ground truth.
+- **Hasil rekonsiliasi:** CLI sekarang menggabungkan I1–I7, melaporkan jumlah byte yang di-hash dan durasi lengkap audit, serta menetapkan `exact_recovery=true` hanya jika semua tujuh invariant lulus. Schema keluaran di `schemas/reconciliation_result.schema.json` sudah diisi.
+- **Test lokal:** `python -m unittest discover tests -v` lulus: 67 test, kode keluar 0. Cakupan mencakup I6/I7, hash stream per potongan, integrasi evaluator I1–I7, dan validasi hasil contoh terhadap schema. Keluaran tersimpan di `docs/evidence/unittest-20261121-reconciliation-i1-i7-local.txt`.
+- **Batas bukti:** belum dijalankan pada keadaan P1/F0 di Lightsail dan belum dilakukan uji kerusakan keadaan nyata. Audit byte akan membaca ulang sekitar 1.056.240.000 byte pada run Main.
 
 ### Hari 10 — Reconciliation metadata I1–I2 — 21 November 2026
 

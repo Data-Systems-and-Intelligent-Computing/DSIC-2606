@@ -32,6 +32,23 @@ class ReferentialInvariantTests(unittest.TestCase):
             "recording_id": "a", "object_uri": "s3://audio/wrong/a.wav"
         }])
 
+    def test_i3_compares_frozen_metadata_fields_and_zoned_time_by_instant(self):
+        expected = [{
+            "recording_id": "a", "device_id": "device-a", "start_time": "2026-09-24T06:30:00Z",
+            "object_uri": "s3://audio/a.wav", "file_size_bytes": "4", "sha256": "abcd",
+        }]
+        actual = [{
+            "recording_id": "a", "device_id": "device-a", "start_time": "2026-09-24T07:30:00+01:00",
+            "object_uri": "s3a://audio/a.wav", "file_size_bytes": 4, "sha256": "ABCD",
+        }]
+        result = reconcile_i3_i5(expected, actual, [{"uri": "s3://audio/a.wav"}])
+        self.assertTrue(result["I3_referential"]["passed"])
+        actual[0]["device_id"] = "other-device"
+        result = reconcile_i3_i5(expected, actual, [{"uri": "s3://audio/a.wav"}])
+        self.assertEqual(result["I3_referential"]["metadata_field_mismatches"], [{
+            "recording_id": "a", "field": "device_id", "expected": "device-a", "actual": "other-device"
+        }])
+
 
 if __name__ == "__main__":
     unittest.main()

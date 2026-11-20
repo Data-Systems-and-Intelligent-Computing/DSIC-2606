@@ -48,7 +48,7 @@ Kolom runtime seperti `ingestion_time` dan `run_id` tidak dimasukkan ke `expecte
 |---|---|---|
 | **I1 — Missing metadata** | Ada `recording_id` yang diharapkan tetapi tidak ada di tabel Iceberg. | `recording_id` pada tabel Iceberg dibandingkan dengan daftar acuan. |
 | **I2 — Duplicate metadata** | Satu `recording_id` muncul lebih dari sekali di tabel Iceberg. | `recording_id`; setiap ID harus unik. |
-| **I3 — Referential violation** | `object_uri` pada metadata menunjuk ke URI/path yang salah atau tidak sesuai acuan. | `recording_id`, `object_uri`, dan `object_uri` acuan. |
+| **I3 — Referential violation** | Metadata untuk ID yang dikenal tidak sesuai nilai acuan: URI menunjuk ke objek yang salah, atau isi kolom metadata beku tidak sama. | `recording_id`, `device_id`, `start_time`, `object_uri`, `file_size_bytes`, dan `sha256` dibandingkan dengan baris expected; URI dan waktu memakai aturan kesetaraan semantik di atas. |
 | **I4 — Orphan object** | Ada objek di storage tanpa baris metadata yang merujuk kepadanya. | Daftar objek di storage dibandingkan dengan `object_uri` pada tabel Iceberg. |
 | **I5 — Dangling metadata** | Ada baris metadata yang menunjuk ke objek yang tidak ada di storage. | `recording_id`, `object_uri`, dan daftar objek aktual di storage. |
 | **I6 — Checksum mismatch** | Isi objek berbeda dari berkas acuan. | `sha256` acuan dibandingkan dengan hash objek aktual; `file_size_bytes` juga diperiksa. |
@@ -61,3 +61,5 @@ Sebagian invarian memerlukan daftar objek aktual dari storage selain kolom `expe
 - URI dinormalisasi hanya pada skema (`s3://` dan `s3a://` dianggap setara). Nama bucket dan object key dibandingkan persis, tanpa mengubah kapitalisasi atau prefix.
 - Objek dibaca dari seluruh halaman `ListObjectsV2` untuk setiap bucket yang dirujuk expected metadata. Objek yang tidak terpetakan atau tidak dirujuk tetap dilaporkan sebagai orphan; tidak diabaikan berdasarkan nama prefix.
 - Bila `object_uri` metadata diubah ke URI yang tidak ada, I3 dan I5 harus berbunyi, dan objek asli yang tak lagi dirujuk juga membuat I4 berbunyi. Bila objek tambahan disisipkan, hanya I4 berbunyi. Bila objek dihapus sementara metadata tetap ada, hanya I5 berbunyi.
+- I6 mengunduh byte setiap objek acuan yang ditemukan di listing, lalu menghitung SHA-256 aktual per potongan 1 MiB dan membandingkan ukuran serta hash dengan `expected_metadata.csv`. Ini membuktikan byte objek, bukan metadata checksum yang tersimpan; satu rekonsiliasi Main dapat membaca sekitar 1.056.240.000 byte.
+- Pemetaan objek memakai URI bucket+key yang dinormalisasi; object key yang tidak dirujuk metadata tetap dilaporkan I4. I6 memetakan objek acuan ke `recording_id` lewat URI beku pada expected metadata, bukan dengan menebak dari nama file.

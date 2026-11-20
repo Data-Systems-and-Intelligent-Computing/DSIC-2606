@@ -13,8 +13,10 @@ reconciliation:
       also_report: "excess duplicate rows and rows with empty recording_id"
     I3:
       name: "referential"
-      definition: "Metadata object_uri matches the frozen expected URI for its recording_id"
+      definition: "Known recording metadata matches frozen content and refers to the expected object"
       uri_equivalence: "s3:// and s3a:// are equivalent; bucket and object key must match exactly"
+      exact_fields: ["device_id", "file_size_bytes", "sha256"]
+      semantic_fields: ["start_time", "object_uri"]
     I4:
       name: "no_orphan"
       definition: "Every listed object in a manifest bucket is referenced by at least one metadata row"
@@ -22,3 +24,12 @@ reconciliation:
     I5:
       name: "no_dangling"
       definition: "Every metadata object_uri resolves to a listed object in its bucket"
+    I6:
+      name: "byte_integrity"
+      definition: "Downloaded object size and SHA-256 equal the frozen expected metadata"
+      checksum_source: "download object and compute SHA-256 in 1 MiB chunks"
+    I7:
+      name: "no_extras"
+      definition: "No metadata recording_id exists outside the frozen expected ID set"
+  exact_recovery: "all seven invariant passed flags are true"
+  output_schema: "schemas/reconciliation_result.schema.json"

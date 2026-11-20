@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dsic-lab.invalid/schemas/reconciliation_result.schema.json",
+  "title": "DSIC-2606 reconciliation result",
+  "type": "object",
+  "required": [
+    "metadata_table",
+    "expected_metadata_path",
+    "expected_recording_count",
+    "actual_metadata_row_count",
+    "actual_distinct_nonempty_recording_ids",
+    "actual_object_count",
+    "actual_distinct_object_uri_count",
+    "hashed_byte_count",
+    "duration_seconds",
+    "I1_completeness",
+    "I2_uniqueness",
+    "I3_referential",
+    "I4_no_orphan",
+    "I5_no_dangling",
+    "I6_byte_integrity",
+    "I7_no_extras",
+    "all_pass",
+    "exact_recovery"
+  ],
+  "properties": {
+    "metadata_table": { "type": "string", "minLength": 1 },
+    "expected_metadata_path": { "type": "string", "minLength": 1 },
+    "expected_recording_count": { "type": "integer", "minimum": 1 },
+    "actual_metadata_row_count": { "type": "integer", "minimum": 0 },
+    "actual_distinct_nonempty_recording_ids": { "type": "integer", "minimum": 0 },
+    "actual_object_count": { "type": "integer", "minimum": 0 },
+    "actual_distinct_object_uri_count": { "type": "integer", "minimum": 0 },
+    "hashed_byte_count": { "type": "integer", "minimum": 0 },
+    "duration_seconds": { "type": "number", "minimum": 0 },
+    "I1_completeness": { "$ref": "#/$defs/invariant" },
+    "I2_uniqueness": { "$ref": "#/$defs/invariant" },
+    "I3_referential": { "$ref": "#/$defs/invariant" },
+    "I4_no_orphan": { "$ref": "#/$defs/invariant" },
+    "I5_no_dangling": { "$ref": "#/$defs/invariant" },
+    "I6_byte_integrity": { "$ref": "#/$defs/invariant" },
+    "I7_no_extras": { "$ref": "#/$defs/invariant" },
+    "all_pass": { "type": "boolean" },
+    "exact_recovery": { "type": "boolean" }
+  },
+  "$defs": {
+    "invariant": {
+      "type": "object",
+      "required": ["passed"],
+      "properties": { "passed": { "type": "boolean" } },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

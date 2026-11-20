@@ -1,0 +1,8 @@
+Command: python -m unittest discover tests -v
+Result: Ran 67 tests in 1.307s
+Status: OK
+Exit code: 0
+
+Additional checks:
+- python -m json.tool schemas/reconciliation_result.schema.json: passed
+- The integrated clean reconciliation result was validated against schemas/reconciliation_result.schema.json in test_reconciliation_readers.py.
