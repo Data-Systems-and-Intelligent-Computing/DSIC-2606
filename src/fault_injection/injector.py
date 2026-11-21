@@ -50,8 +50,8 @@ class F1DriverKillInjector:
             raise FileExistsError(f"stale F1 marker exists for run {self.run_id}")
         target = self.plan.target.format(run_id=self.run_id)
         event = {
-            "run_id": self.run_id, "treatment": self.treatment,
             "target": target, "fault_point": "F1", "batch_id": batch_id,
+            "run_id": self.run_id, "treatment": self.treatment,
             "record_index": record_index, "stage": self.plan.stage,
             "method": self.plan.method, "recording_id": recording_id,
             "object_uri": object_uri, "object_key": object_key,
@@ -64,9 +64,12 @@ class F1DriverKillInjector:
             batch_id, record_index, self.plan.stage, object_key,
             metadata_rows_committed, target,
         )
+        # The lab supervisor reads `target=<container>` with awk -F=; keep
+        # target as the first key=value line and use the same format for the
+        # remaining marker fields copied into harness.log.
+        marker_text = "\n".join(f"{key}={value}" for key, value in event.items()) + "\n"
         with temporary.open("x", encoding="utf-8") as stream:
-            json.dump(event, stream, sort_keys=True, separators=(",", ":"))
-            stream.write("\n")
+            stream.write(marker_text)
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temporary, marker)

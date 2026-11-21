@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -48,10 +47,14 @@ class F1InjectorTests(unittest.TestCase):
                     metadata_rows_committed=4, put_confirmed=True,
                 )
             marker = Path(tmp) / "test-run.kill"
-            event = json.loads(marker.read_text(encoding="utf-8"))
+            event = dict(
+                line.split("=", 1)
+                for line in marker.read_text(encoding="utf-8").splitlines()
+            )
+            self.assertTrue(marker.read_text(encoding="utf-8").startswith("target="))
             self.assertEqual(event["target"], "drv-test-run-a1")
             self.assertEqual(event["fault_point"], "F1")
-            self.assertEqual(event["metadata_rows_committed"], 4)
+            self.assertEqual(event["metadata_rows_committed"], "4")
             self.assertFalse((Path(tmp) / ".test-run.kill.tmp").exists())
             self.assertEqual(waited, [True])
 
