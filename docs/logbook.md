@@ -573,7 +573,9 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Perubahan:** ditambahkan I6 yang mengunduh objek acuan yang tercantum di listing dan menghitung SHA-256 aktual per potongan 1 MiB, serta membandingkan ukuran/hash dengan expected metadata. I7 melaporkan recording ID metadata yang tidak terdapat di ground truth.
 - **Hasil rekonsiliasi:** CLI sekarang menggabungkan I1–I7, melaporkan jumlah byte yang di-hash dan durasi lengkap audit, serta menetapkan `exact_recovery=true` hanya jika semua tujuh invariant lulus. Schema keluaran di `schemas/reconciliation_result.schema.json` sudah diisi.
 - **Test lokal:** `python -m unittest discover tests -v` lulus: 67 test, kode keluar 0. Cakupan mencakup I6/I7, hash stream per potongan, integrasi evaluator I1–I7, dan validasi hasil contoh terhadap schema. Keluaran tersimpan di `docs/evidence/unittest-20261121-reconciliation-i1-i7-local.txt`.
-- **Batas bukti:** belum dijalankan pada keadaan P1/F0 di Lightsail dan belum dilakukan uji kerusakan keadaan nyata. Audit byte akan membaca ulang sekitar 1.056.240.000 byte pada run Main.
+- **Audit bersih P1/F0 di Lightsail:** `I1_I7_RECONCILIATION` menghasilkan `all_pass=true` dan `exact_recovery=true`. Dari 300 ID/objek yang diharapkan, tidak ada ID hilang, duplikat, metadata tambahan, objek yatim, metadata menggantung, atau ketidakcocokan metadata/byte. Ketujuh invariant lulus; 300 objek (1.056.240.000 byte) diunduh dan di-hash, durasi audit 56,772 detik.
+- **Bukti VM:** log mentah `docs/evidence/reconciliation-i1-i7-p1-f0-20261120.log` (disalin dari `/data/results/reconciliation-i1-i7-p1-f0-20261120.log`). Audit ini hanya membaca keadaan P1/F0; tidak menguji fault/restart dan tidak mengubah sink.
+- **Batas bukti:** audit I1–I7 bersih ini baru untuk P1/F0. B0/F0, B1/F0, dan B2/F0 belum diaudit dengan rekonsiliator lengkap versi I1–I7; uji keadaan nyata yang dirusak juga masih perlu dilakukan sebelum rangkaian E0 empat treatment dinyatakan selesai.
 
 ### Hari 10 — Reconciliation metadata I1–I2 — 21 November 2026
 
@@ -581,3 +583,12 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Audit Spark P1/F0 di Lightsail:** dijalankan terhadap `lab.main.recordings`; proses Spark berhenti dengan exit code 0. Ringkasan `I1_I2_RECONCILIATION` menyatakan `all_pass=true`: 300 ID yang diharapkan, 300 baris metadata aktual, 300 ID unik, 0 ID hilang, 0 duplikat, dan 0 baris dengan ID kosong.
 - **Test lokal:** `python -m unittest discover tests -v` lulus: 51 test, 0 gagal, kode keluar 0. Test baru mencakup keadaan lulus, missing ID, metadata duplikat, dan ID aktual kosong. Keluaran tersimpan di `docs/evidence/unittest-20261121-reconciliation-i1-i2-local.txt`.
 - **Bukti VM:** log audit mentah tersimpan di `docs/evidence/reconciliation-i1-i2-p1-f0-20261121.log` (33.166 byte).
+
+### Audit ulang B0/F0 untuk perbandingan E0 — 21 November 2026
+
+- **Keadaan awal dan eksekusi:** `make reset` berakhir dengan `reset bersih`, lalu B0/F0 dijalankan dengan `RUN_ID=e0-b0-20261121`. Ingest selesai dengan kode keluar 0 dan 30 batch.
+- **Audit setara:** hasil `I1_I7_RECONCILIATION` menyatakan `all_pass=true` dan `exact_recovery=true`. Terdapat 300 objek, 300 baris metadata, 300 recording ID unik, dan 300 URI objek unik.
+- **Rincian invariant:** I1 tidak menemukan ID hilang; I2 tidak menemukan ID duplikat atau kosong; I3 tidak menemukan metadata yang berbeda dari ground truth; I4 tidak menemukan objek yatim; I5 tidak menemukan metadata tanpa objek; I6 memeriksa SHA-256 seluruh 300 WAV (1.056.240.000 byte) tanpa mismatch; I7 tidak menemukan baris metadata tambahan.
+- **Durasi audit:** 54,963 detik. Audit I1–I7 ini membaca hasil B0/F0 setelah ingest; bukan pengujian fault/restart.
+- **Bukti mentah:** `docs/evidence/e0-b0-f0-20261121.log` (2.408.424 byte), berisi keluaran reset, ingest, dan audit.
+- **Status perbandingan E0:** B0/F0 sudah diulang dari keadaan bersih dan diaudit dengan I1–I7. B1/F0 dan B2/F0 masih perlu dijalankan ulang dan diaudit dengan cara yang sama agar perbandingannya setara.
