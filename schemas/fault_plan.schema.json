@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fault_plan.schema.json",
+  "title": "Frozen fault injection plan",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["fault_plan"],
+      "properties": {
+        "fault_plan": {
+          "type": "object",
+          "required": ["fault_point", "enabled"],
+          "properties": {
+            "fault_point": {"const": "F0"},
+            "enabled": {"const": false},
+            "description": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": ["fault_plan"],
+      "properties": {
+        "fault_plan": {
+          "type": "object",
+          "required": ["fault_point", "enabled", "batch_id", "record_index", "stage", "target", "method", "rationale"],
+          "properties": {
+            "fault_point": {"const": "F1"},
+            "enabled": {"const": true},
+            "batch_id": {"type": "integer", "minimum": 0, "maximum": 29},
+            "record_index": {"type": "integer", "minimum": 1, "maximum": 10},
+            "stage": {"const": "after_object_put_before_metadata_commit"},
+            "target": {"const": "drv-{run_id}-a1"},
+            "method": {"const": "sigkill_on_marker"},
+            "rationale": {"type": "string", "minLength": 20}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

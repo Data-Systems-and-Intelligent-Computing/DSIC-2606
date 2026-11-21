@@ -1,0 +1,4 @@
+fault_plan:
+  fault_point: F0
+  enabled: false
+  description: "Baseline run without injected failure."

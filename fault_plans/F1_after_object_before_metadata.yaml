@@ -1,0 +1,13 @@
+fault_plan:
+  fault_point: F1
+  enabled: true
+  batch_id: 14
+  record_index: 5
+  stage: after_object_put_before_metadata_commit
+  target: "drv-{run_id}-a1"
+  method: sigkill_on_marker
+  rationale: >-
+    Batch 14 is an interior batch in the frozen 0..29 sequence, avoiding first-
+    and last-batch edge cases. Record 5 leaves records 1..4 in that batch with
+    committed metadata while the target record's object exists without metadata.
+    The same batch and record position are held constant across B0, B1, B2, and P1.

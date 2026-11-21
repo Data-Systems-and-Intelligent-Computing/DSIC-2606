@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "run_log.schema.json",
+  "title": "Structured fault boundary log event",
+  "type": "object",
+  "required": ["run_id", "treatment", "fault_point", "batch_id", "record_index", "stage", "target", "method", "timestamp_utc"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "treatment": {"enum": ["B0", "B1", "B2", "P1"]},
+    "fault_point": {"enum": ["F0", "F1", "F2", "F3"]},
+    "batch_id": {"type": "integer", "minimum": 0},
+    "record_index": {"type": "integer", "minimum": 1, "maximum": 10},
+    "stage": {"type": "string", "minLength": 1},
+    "target": {"type": "string", "minLength": 1},
+    "method": {"type": "string", "minLength": 1},
+    "object_key": {"type": "string"},
+    "object_uri": {"type": "string"},
+    "recording_id": {"type": "string"},
+    "metadata_rows_committed": {"type": "integer", "minimum": 0},
+    "timestamp_utc": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

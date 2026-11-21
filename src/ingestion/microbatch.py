@@ -16,12 +16,14 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.checkpointing.treatment_config import resolve_checkpoint_location
+from src.fault_injection.fault_plan import load_fault_plan
+from src.fault_injection.injector import F1DriverKillInjector
 from src.idempotence.metadata_upsert import upsert_metadata
 from src.idempotence.object_guard import guard_object
 from src.idempotence.conflict_guard import require_unique_recording_ids
 from src.ingestion.source_replay import ReplayFeeder
 from src.ingestion.write_metadata import append_metadata, ensure_metadata_table, validate_metadata_table
-from src.ingestion.write_object import create_s3_client, prepare_upload_record, upload_recording
+from src.ingestion.write_object import create_s3_client, object_target, prepare_upload_record, upload_recording
 
 LOGGER = logging.getLogger("dsic.ingestion")
 EVENT_PATTERN = re.compile(r"^event-(\d{3,})\.json$")
@@ -111,7 +113,8 @@ def _load_configs(root: Path, treatment: str):
 def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
                    threshold: int, part_size: int, table: str, s3_client,
                    expected_spark_batch_id: int, idempotence_enabled: bool = False,
-                   idempotence_config: dict | None = None) -> int:
+                   idempotence_config: dict | None = None,
+                   fault_injector: F1DriverKillInjector | None = None) -> int:
     event_id = int(event["batch_id"])
     if event_id != expected_spark_batch_id:
         raise RuntimeError(
@@ -129,7 +132,8 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
 
     # Keep each record's boundaries explicit: confirmed object PUT, then one
     # Iceberg append commit. This is the observable F1/F2 boundary in later phases.
-    for recording_id in recording_ids:
+    metadata_rows_committed = 0
+    for record_index, recording_id in enumerate(recording_ids, start=1):
         if recording_id not in manifest:
             raise ValueError(f"event {event_id} references unknown ID {recording_id}")
         source = manifest[recording_id]
@@ -142,8 +146,26 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
                 "OBJECT_GUARD_DECISION batch_id=%d recording_id=%s decision=%s bytes_verified=%d",
                 event_id, recording_id, object_result["decision"], object_result["bytes_verified"],
             )
+            put_confirmed = object_result["decision"] == "PUT"
         else:
             upload_recording(s3_client, upload_item)
+            put_confirmed = True
+        LOGGER.info(
+            "OBJECT_METADATA_BOUNDARY batch_id=%d record_index=%d recording_id=%s "
+            "object_key=%s metadata_rows_committed=%d put_confirmed=%s",
+            event_id, record_index, recording_id,
+            upload_item.get("object_key") or object_target(str(source["expected_object_uri"]))[1],
+            metadata_rows_committed, put_confirmed,
+        )
+        if fault_injector is not None:
+            fault_injector.after_object_put(
+                batch_id=event_id, record_index=record_index,
+                recording_id=recording_id,
+                object_uri=str(source["expected_object_uri"]),
+                object_key=str(upload_item.get("object_key") or object_target(str(source["expected_object_uri"]))[1]),
+                metadata_rows_committed=metadata_rows_committed,
+                put_confirmed=put_confirmed,
+            )
         metadata_row = {
             "recording_id": recording_id,
             "device_id": source["device_id"],
@@ -162,6 +184,7 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
             append_metadata(spark, [metadata_row], table=table)
             LOGGER.info("ICEBERG_COMMIT_COMPLETED batch_id=%d recording_id=%s rows=1",
                         event_id, recording_id)
+        metadata_rows_committed += 1
 
     LOGGER.info("REPLAY_BATCH_COMPLETED batch_id=%d recording_ids=%s",
                 event_id, json.dumps(recording_ids, separators=(",", ":")))
@@ -239,6 +262,17 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
     if not run_id or not treatment:
         raise ValueError("RUN_ID and TREATMENT are required")
 
+    fault_point = os.environ.get("FAULT_POINT", "F0").upper()
+    if fault_point not in {"F0", "F1"}:
+        raise ValueError("this ingestion version supports FAULT_POINT=F0 or F1")
+    plan_path = Path(os.environ.get(
+        "FAULT_PLAN_PATH", root / "fault_plans" / f"{fault_point}_{'no_failure' if fault_point == 'F0' else 'after_object_before_metadata'}.yaml"
+    ))
+    fault_plan = load_fault_plan(plan_path, fault_point)
+    fault_injector = F1DriverKillInjector(
+        fault_plan, run_id, treatment, Path(os.environ.get("SIGNAL_DIR", "/signals"))
+    )
+
     treatment_config, checkpoint_config, environment, ingestion, idempotence_config = _load_configs(root, treatment)
     checkpoint_location = Path(resolve_checkpoint_location(
         treatment_config["checkpoint_location"],
@@ -291,6 +325,8 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
         "upload_multipart_threshold_bytes": threshold,
         "upload_multipart_part_size_bytes": part_size,
         "idempotence_policy": idempotence_config,
+        "fault_point": fault_point,
+        "fault_plan": fault_plan.as_dict(),
     }
     LOGGER.info("EFFECTIVE_CONFIG %s", json.dumps(effective_config, sort_keys=True, separators=(",", ":")))
 
@@ -319,7 +355,8 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
                                             threshold, part_size, table, s3_client,
                                             int(spark_batch_id),
                                             idempotence_enabled=bool(treatment_config["idempotence_enabled"]),
-                                            idempotence_config=idempotence_config))
+                                            idempotence_config=idempotence_config,
+                                            fault_injector=fault_injector))
 
         query = (spark.readStream.schema(event_schema)
                  .option("maxFilesPerTrigger", 1)
