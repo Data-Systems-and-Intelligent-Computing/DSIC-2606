@@ -610,3 +610,12 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Durasi audit:** 55,708 detik. Setelah Spark menghentikan context dengan exit code 0, log mencatat `ERROR Inbox: Ignoring error` pada proses penutupan. Rekonsiliasi I1–I7 tetap selesai dan lulus; pesan penutupan ini dicatat agar bukti lengkap.
 - **Bukti mentah:** `docs/evidence/e0-b2-f0-20261121.log` (13.163.147 byte), berisi keluaran reset, ingest, dan audit.
 - **Status perbandingan E0:** B0/F0, B1/F0, dan B2/F0 sudah diulang dari keadaan bersih serta diaudit dengan I1–I7 yang sama. P1/F0 masih perlu dijalankan ulang dan diaudit agar perbandingan empat treatment setara.
+
+### Audit ulang P1/F0 dan penutupan perbandingan E0 — 21 November 2026
+
+- **Keadaan awal dan eksekusi:** `make reset` berakhir dengan `reset bersih`, lalu P1/F0 dijalankan dengan `RUN_ID=e0-p1-20261121`. Ingest selesai dengan kode keluar 0 dan 30 batch.
+- **Audit setara:** hasil `I1_I7_RECONCILIATION` menyatakan `all_pass=true` dan `exact_recovery=true`. Terdapat 300 objek, 300 baris metadata, 300 recording ID unik, dan 300 URI objek unik.
+- **Rincian invariant:** I1 tidak menemukan ID hilang; I2 tidak menemukan ID duplikat atau kosong; I3 tidak menemukan metadata yang berbeda dari ground truth; I4 tidak menemukan objek yatim; I5 tidak menemukan metadata tanpa objek; I6 memeriksa SHA-256 seluruh 300 WAV (1.056.240.000 byte) tanpa mismatch; I7 tidak menemukan baris metadata tambahan.
+- **Durasi audit:** 55,501 detik. Audit ini membaca hasil P1/F0 setelah ingest; bukan pengujian fault/restart.
+- **Bukti mentah:** `docs/evidence/e0-p1-f0-20261121.log` (13.162.599 byte), berisi keluaran reset, ingest, dan audit.
+- **Status perbandingan E0:** B0/F0, B1/F0, B2/F0, dan P1/F0 kini sudah dijalankan ulang dari keadaan bersih serta diaudit dengan I1–I7 yang sama. Keempat hasil exact-recovery lulus. Hasil ini menutup perbandingan E0 pada F0; belum menyimpulkan hasil pengujian fault F1–F3.
