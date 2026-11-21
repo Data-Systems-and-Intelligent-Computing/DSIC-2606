@@ -592,3 +592,12 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Durasi audit:** 54,963 detik. Audit I1–I7 ini membaca hasil B0/F0 setelah ingest; bukan pengujian fault/restart.
 - **Bukti mentah:** `docs/evidence/e0-b0-f0-20261121.log` (2.408.424 byte), berisi keluaran reset, ingest, dan audit.
 - **Status perbandingan E0:** B0/F0 sudah diulang dari keadaan bersih dan diaudit dengan I1–I7. B1/F0 dan B2/F0 masih perlu dijalankan ulang dan diaudit dengan cara yang sama agar perbandingannya setara.
+
+### Audit ulang B1/F0 untuk perbandingan E0 — 21 November 2026
+
+- **Keadaan awal dan eksekusi:** `make reset` berakhir dengan `reset bersih`, lalu B1/F0 dijalankan dengan `RUN_ID=e0-b1-20261121`. Ingest selesai dengan kode keluar 0 dan 30 batch.
+- **Audit setara:** hasil `I1_I7_RECONCILIATION` menyatakan `all_pass=true` dan `exact_recovery=true`. Terdapat 300 objek, 300 baris metadata, 300 recording ID unik, dan 300 URI objek unik.
+- **Rincian invariant:** I1 tidak menemukan ID hilang; I2 tidak menemukan ID duplikat atau kosong; I3 tidak menemukan metadata yang berbeda dari ground truth; I4 tidak menemukan objek yatim; I5 tidak menemukan metadata tanpa objek; I6 memeriksa SHA-256 seluruh 300 WAV (1.056.240.000 byte) tanpa mismatch; I7 tidak menemukan baris metadata tambahan.
+- **Durasi audit:** 56,598 detik. Audit I1–I7 ini membaca hasil B1/F0 setelah ingest; bukan pengujian fault/restart.
+- **Bukti mentah:** `docs/evidence/e0-b1-f0-20261121.log` (2.409.190 byte), berisi keluaran reset, ingest, dan audit.
+- **Status perbandingan E0:** B0/F0 dan B1/F0 sudah diulang dari keadaan bersih serta diaudit dengan I1–I7 yang sama. B2/F0 dan P1/F0 masih perlu dijalankan ulang dan diaudit dengan cara yang sama agar perbandingan empat treatment setara.
