@@ -675,3 +675,13 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Audit I1–I7:** semua invariant lulus (`all_pass=true`, `exact_recovery=true`). Ada 300 objek dan 300 baris metadata; tidak ada ID hilang, duplikat, tambahan, objek yatim, metadata menggantung, atau mismatch metadata/byte. I6 menghitung SHA-256 seluruh 300 WAV (1.056.240.000 byte). Durasi audit 54,704 detik.
 - **Interpretasi:** B2 kehilangan checkpoint ephemeral dan memutar ulang stream, tetapi idempotence guard mengenali objek serta metadata yang sudah sesuai sehingga hasil akhir tetap konsisten. Hasil pilot ini mendukung pemulihan tepat untuk B2/F1 pada run ini; satu run belum cukup untuk menyatakan keterulangan treatment.
 - **Bukti mentah:** `docs/evidence/reset-before-w2-retry-f1-B2-01.log`, `harness-w2-retry-f1-B2-01.log`, `w2-retry-f1-B2-01-attempt1.log`, `w2-retry-f1-B2-01-attempt2.log`, `snapshot-w2-retry-f1-B2-01.log`, dan `reconciliation-w2-retry-f1-B2-01.log`.
+
+### Ulangan B2/F1 kedua — 22 November 2026 UTC
+
+- **Identitas dan injeksi:** `RUN_ID=w2-retry-f1-B2-02R`. Run pengganti dimulai setelah reset bersih. Harness mencatat F1 pada batch 14, rekaman ke-5 (`MAIN_5JAM_20260924_155400`), sesudah PUT objek dan sebelum metadata target di-commit. Driver mati dengan exit code 137 sesuai rencana.
+- **Snapshot pra-pemulihan:** pemeriksaan baca-saja lulus: 145 objek, 144 baris metadata; objek target ada dan metadata target belum ada. Checkpoint ephemeral B2 tidak ditemukan.
+- **Recovery:** attempt 2 memakai RUN_ID yang sama, tanpa reset. Log mencatat 30 batch selesai; `F0_RECONCILIATION` melaporkan 300 objek, 300 baris metadata, dan 300 ID unik. Attempt 2 berakhir dengan kode 0.
+- **Audit I1–I7:** seluruh invariant lulus (`all_pass=true`, `exact_recovery=true`). Tidak ada ID hilang/duplikat/tambahan, metadata tidak cocok, objek yatim, atau metadata menggantung. I6 menghitung SHA-256 300 objek (1.056.240.000 byte) tanpa mismatch. Durasi audit 53,593 detik.
+- **Urutan replay:** pemeriksa menyatakan `30 batch x 10 ID COCOK dengan batch_order_main.csv`.
+- **Catatan run terdahulu:** `w2-retry-f1-B2-02` menghasilkan kondisi akhir yang lulus audit, tetapi log attempt 2 terputus sebelum batch 29 dan penanda selesai. Log dan audit terdahulu diarsipkan di VM sebagai run tidak lengkap; run pengganti ini dipakai sebagai ulangan kedua yang dapat diaudit.
+- **Bukti mentah:** `docs/evidence/reset-before-w2-retry-f1-B2-02R.log`, `harness-w2-retry-f1-B2-02R.log`, `w2-retry-f1-B2-02R-attempt1.log`, `w2-retry-f1-B2-02R-attempt2.log`, `snapshot-w2-retry-f1-B2-02R.log`, `reconciliation-w2-retry-f1-B2-02R.log`, dan `verify-batches-w2-retry-f1-B2-02R.txt`.

@@ -1,0 +1,39 @@
+attempt=1 container=drv-w2-retry-f1-B2-02R-a1 treatment=B2 fault_point=F1 app=/workspace/src/ingestion/microbatch.py
+attempt1_user_hz=100
+attempt1_steal_jiffies_start=2144736
+attempt1_proc_stat_cpu_start=cpu  15818233 37258 6734054 1205954989 383164 0 898663 2144736 0 0
+attempt1_psi_cpu_start=some avg10=44.77 avg60=26.54 avg300=11.33 total=21725566072|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt1_start_utc=2026-11-22T07:17:48.951Z
+kill_target=drv-w2-retry-f1-B2-02R-a1
+kill_container_id=7236a66ecd5b
+kill_time_utc=2026-11-22T07:27:16.131Z
+marker_target=drv-w2-retry-f1-B2-02R-a1
+marker_fault_point=F1
+marker_batch_id=14
+marker_run_id=w2-retry-f1-B2-02R
+marker_treatment=B2
+marker_record_index=5
+marker_stage=after_object_put_before_metadata_commit
+marker_method=sigkill_on_marker
+marker_recording_id=MAIN_5JAM_20260924_155400
+marker_object_uri=s3://audiomoth/MAIN_5JAM/2026-09-24/20260924_155400.WAV
+marker_object_key=MAIN_5JAM/2026-09-24/20260924_155400.WAV
+marker_metadata_rows_committed=4
+marker_timestamp_utc=2026-11-22T07:27:15.673063+00:00
+attempt1_end_utc=2026-11-22T07:27:16.167Z
+attempt1_steal_jiffies_end=2144955
+attempt1_proc_stat_cpu_end=cpu  15895214 37258 6745873 1206088168 383566 0 900572 2144955 0 0
+attempt1_psi_cpu_end=some avg10=34.45 avg60=33.96 avg300=35.22 total=21969484006|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt1_exit_code=137
+attempt=2 container=drv-w2-retry-f1-B2-02R-a2 treatment=B2 fault_point=F0 app=/workspace/src/ingestion/microbatch.py
+attempt2_user_hz=100
+attempt2_steal_jiffies_start=2145002
+attempt2_proc_stat_cpu_start=cpu  15902314 37258 6747499 1206411521 383717 0 900801 2145002 0 0
+attempt2_psi_cpu_start=some avg10=0.00 avg60=0.20 avg300=5.45 total=22004125388|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt2_start_utc=2026-11-22T07:41:08.986Z
+kill_none=driver_exited_without_marker
+attempt2_end_utc=2026-11-22T08:02:25.006Z
+attempt2_steal_jiffies_end=2146110
+attempt2_proc_stat_cpu_end=cpu  16090897 37258 6781146 1206683943 384436 0 906822 2146110 0 0
+attempt2_psi_cpu_end=some avg10=31.82 avg60=31.36 avg300=31.22 total=22472976443|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt2_exit_code=0
