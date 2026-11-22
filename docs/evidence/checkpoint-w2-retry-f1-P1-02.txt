@@ -1,0 +1,4 @@
+Checkpoint P1 setelah pemulihan
+drwxr-xr-x 5 185 185 4096 Nov 22 09:17 /data/state/checkpoints/w2-retry-f1-P1-02/P1
+Jumlah commit bernomor:
+30
