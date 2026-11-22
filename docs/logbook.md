@@ -685,3 +685,12 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Urutan replay:** pemeriksa menyatakan `30 batch x 10 ID COCOK dengan batch_order_main.csv`.
 - **Catatan run terdahulu:** `w2-retry-f1-B2-02` menghasilkan kondisi akhir yang lulus audit, tetapi log attempt 2 terputus sebelum batch 29 dan penanda selesai. Log dan audit terdahulu diarsipkan di VM sebagai run tidak lengkap; run pengganti ini dipakai sebagai ulangan kedua yang dapat diaudit.
 - **Bukti mentah:** `docs/evidence/reset-before-w2-retry-f1-B2-02R.log`, `harness-w2-retry-f1-B2-02R.log`, `w2-retry-f1-B2-02R-attempt1.log`, `w2-retry-f1-B2-02R-attempt2.log`, `snapshot-w2-retry-f1-B2-02R.log`, `reconciliation-w2-retry-f1-B2-02R.log`, dan `verify-batches-w2-retry-f1-B2-02R.txt`.
+
+### Pilot F1 P1 pertama — 22 November 2026 UTC
+
+- **Identitas dan injeksi:** `RUN_ID=w2-retry-f1-P1-01`. F1 terjadi pada batch 14, rekaman ke-5 (`MAIN_5JAM_20260924_155400`), setelah PUT objek target dan sebelum metadata target di-commit. Harness mengonfirmasi exit code 137.
+- **Snapshot pra-pemulihan:** pemeriksaan baca-saja lulus dengan 145 objek dan 144 baris metadata; objek target ada, metadata target belum ada. Checkpoint P1 persistent ditemukan: offset batch 14 ada, commit batch 14 belum ada.
+- **Recovery:** attempt 2 memakai RUN_ID sama tanpa reset, berakhir dengan kode 0. Log internal mencatat 300 objek, 300 baris metadata, 300 ID unik, dan 30 batch selesai. Checkpoint setelah pemulihan berisi 30 commit bernomor.
+- **Urutan replay:** log attempt 2 sendiri dimulai dari batch 14 karena checkpoint persistent. Setelah log attempt 1 dan 2 digabung, pemeriksa memverifikasi `30 batch x 10 ID COCOK dengan batch_order_main.csv`.
+- **Audit I1–I7:** seluruh invariant lulus (`all_pass=true`, `exact_recovery=true`). Ada 300 objek dan 300 baris metadata; tidak ada yang hilang, duplikat, ekstra, yatim, menggantung, atau tidak cocok. I6 menghitung SHA-256 seluruh 300 WAV (1.056.240.000 byte) tanpa mismatch. Durasi audit 56,289 detik.
+- **Bukti mentah:** `docs/evidence/reset-before-w2-retry-f1-P1-01.log`, `harness-w2-retry-f1-P1-01.log`, `w2-retry-f1-P1-01-attempt1.log`, `w2-retry-f1-P1-01-attempt2.log`, `snapshot-w2-retry-f1-P1-01.log`, `reconciliation-w2-retry-f1-P1-01.log`, `verify-batches-w2-retry-f1-P1-01.txt`, dan `checkpoint-w2-retry-f1-P1-01.txt`.

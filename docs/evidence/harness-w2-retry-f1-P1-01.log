@@ -1,0 +1,39 @@
+attempt=1 container=drv-w2-retry-f1-P1-01-a1 treatment=P1 fault_point=F1 app=/workspace/src/ingestion/microbatch.py
+attempt1_user_hz=100
+attempt1_steal_jiffies_start=2146236
+attempt1_proc_stat_cpu_start=cpu  16104096 37258 6785106 1207392996 384850 0 907360 2146236 0 0
+attempt1_psi_cpu_start=some avg10=38.67 avg60=22.80 avg300=7.81 total=22533828798|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt1_start_utc=2026-11-22T08:32:47.325Z
+kill_target=drv-w2-retry-f1-P1-01-a1
+kill_container_id=a815a6c456c9
+kill_time_utc=2026-11-22T08:41:44.828Z
+marker_target=drv-w2-retry-f1-P1-01-a1
+marker_fault_point=F1
+marker_batch_id=14
+marker_run_id=w2-retry-f1-P1-01
+marker_treatment=P1
+marker_record_index=5
+marker_stage=after_object_put_before_metadata_commit
+marker_method=sigkill_on_marker
+marker_recording_id=MAIN_5JAM_20260924_155400
+marker_object_uri=s3://audiomoth/MAIN_5JAM/2026-09-24/20260924_155400.WAV
+marker_object_key=MAIN_5JAM/2026-09-24/20260924_155400.WAV
+marker_metadata_rows_committed=4
+marker_timestamp_utc=2026-11-22T08:41:44.269108+00:00
+attempt1_end_utc=2026-11-22T08:41:44.871Z
+attempt1_steal_jiffies_end=2146561
+attempt1_proc_stat_cpu_end=cpu  16171702 37258 6796591 1207524187 385253 0 909249 2146561 0 0
+attempt1_psi_cpu_end=some avg10=31.80 avg60=32.97 avg300=32.79 total=22754683332|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt1_exit_code=137
+attempt=2 container=drv-w2-retry-f1-P1-01-a2 treatment=P1 fault_point=F0 app=/workspace/src/ingestion/microbatch.py
+attempt2_user_hz=100
+attempt2_steal_jiffies_start=2146582
+attempt2_proc_stat_cpu_start=cpu  16176745 37258 6797269 1207613267 385308 0 909363 2146582 0 0
+attempt2_psi_cpu_start=some avg10=0.00 avg60=5.29 avg300=20.23 total=22782126794|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt2_start_utc=2026-11-22T08:45:42.785Z
+attempt2_end_utc=2026-11-22T09:00:11.442Z
+attempt2_steal_jiffies_end=2147512
+attempt2_proc_stat_cpu_end=cpu  16301616 37258 6819418 1207802805 385843 0 913348 2147512 0 0
+attempt2_psi_cpu_end=some avg10=28.03 avg60=29.99 avg300=32.95 total=23119661549|full avg10=0.00 avg60=0.00 avg300=0.00 total=0|
+attempt2_exit_code=0
+kill_none=driver_exited_without_marker

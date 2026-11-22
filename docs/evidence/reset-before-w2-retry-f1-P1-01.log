@@ -1,0 +1,10 @@
+dsic-lab-lock 2606 -- ./scripts/reset.sh
+ Container dsic2606-minio-init-run-afb73583bf3e Creating 
+ Container dsic2606-minio-init-run-afb73583bf3e Created 
+audiomoth: 300 objek dihapus
+warehouse: 1489 objek dihapus
+ Container dsic2606-minio-init-run-a55ce518b531 Creating 
+ Container dsic2606-minio-init-run-a55ce518b531 Created 
+audiomoth 0
+warehouse 0
+reset bersih
