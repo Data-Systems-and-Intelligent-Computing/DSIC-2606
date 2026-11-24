@@ -1,0 +1,10 @@
+F2/F3 local verification
+Date: 2026-11-25
+Command: python -m unittest discover -s tests -v
+
+Ran 81 tests in 4.797s
+OK
+
+The four F2-specific tests and four F3-specific tests passed, along with the
+existing repository suite. This verifies local code paths and marker behavior;
+it is not evidence of a Lightsail execution or end-to-end Spark fault run.

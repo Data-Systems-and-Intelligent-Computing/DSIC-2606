@@ -1,6 +1,6 @@
 # Arsitektur Pipeline Ingest dan Pemulihan
 
-Dokumen ini menjelaskan arsitektur sistem yang dipakai untuk membandingkan checkpoint dan idempotence pada ingest 300 rekaman WAV. Dokumen ini menggambarkan rancangan yang diterapkan kode saat ini; bukan diagram semua fault yang mungkin diuji. Versi ingest sekarang mendukung F0 (tanpa injeksi kegagalan) dan F1 (driver dihentikan setelah PUT objek, sebelum metadata target di-commit).
+Dokumen ini menjelaskan arsitektur sistem yang dipakai untuk membandingkan checkpoint dan idempotence pada ingest 300 rekaman WAV. Dokumen ini menggambarkan rancangan yang diterapkan kode saat ini; bukan diagram semua fault yang mungkin diuji. Versi ingest mendukung F0 (tanpa injeksi kegagalan), F1 (setelah PUT objek, sebelum metadata target di-commit), F2 (setelah semua metadata pada batch target di-commit, sebelum commit checkpoint Spark), dan F3 (setelah commit checkpoint Spark, sebelum feeder menerbitkan event berikutnya).
 
 ## Diagram komponen dan aliran data
 
@@ -69,7 +69,7 @@ flowchart LR
 - **Iceberg** menyimpan metadata rekaman di `lab.main.recordings`. PostgreSQL JDBC Catalog menyimpan informasi katalog tabel; file data dan metadata Iceberg berada di bucket MinIO `warehouse`.
 - **Rekonsiliator I1-I7** membandingkan objek dan metadata aktual dengan ground truth. I6 membaca byte objek dan menghitung SHA-256; hasil rekonsiliasi dan log eksperimen disimpan sebagai bukti.
 
-## Titik penulisan dan kegagalan F1
+## Titik penulisan dan kegagalan F1–F3
 
 Untuk satu rekaman, urutannya adalah:
 
@@ -78,7 +78,13 @@ Untuk satu rekaman, urutannya adalah:
 3. Setelah PUT terkonfirmasi, menulis metadata ke Iceberg. B0/B1 menggunakan append; B2/P1 menggunakan upsert idempotent berdasarkan `recording_id`.
 4. Setelah callback satu micro-batch selesai, Spark mencatat progres batch pada checkpoint. Feeder baru menerbitkan event berikut setelah commit batch terkonfirmasi.
 
-F1 menghentikan driver setelah langkah 2 untuk satu rekaman dan sebelum langkah 3. Akibatnya objek target dapat ada tanpa metadata, sementara beberapa rekaman sebelumnya dalam batch yang sama mungkin sudah memiliki metadata. Saat proses dilanjutkan, Spark menggunakan checkpoint yang tersedia dan menjalankan kembali bagian stream yang belum committed. Checkpoint menyimpan progres stream; ia tidak dengan sendirinya membuat dua sink (MinIO dan Iceberg) menjadi satu transaksi atomik. B2/P1 menambahkan guard objek dan upsert metadata untuk mengendalikan pengulangan tersebut.
+F1 menghentikan driver setelah langkah 2 untuk rekaman ke-5 batch 14 dan sebelum langkah 3. Akibatnya objek target dapat ada tanpa metadata, sementara empat rekaman sebelumnya dalam batch yang sama sudah memiliki metadata.
+
+F2 menghentikan driver setelah metadata kesepuluh pada batch 14 berhasil di-commit, tetapi sebelum callback Spark kembali. Akibatnya metadata untuk 150 rekaman sudah ada, sedangkan commit batch 14 belum ada pada checkpoint.
+
+F3 menghentikan driver setelah commit batch 14 terkonfirmasi pada checkpoint, tetapi sebelum feeder menerbitkan event 15. Pada B1/P1, checkpoint persisten dapat melanjutkan dari batch berikutnya; pada B0/B2, checkpoint ephemeral hilang ketika driver diganti.
+
+Saat proses dilanjutkan, Spark menggunakan checkpoint yang tersedia dan menjalankan kembali bagian stream yang belum committed. Checkpoint menyimpan progres stream; ia tidak dengan sendirinya membuat dua sink (MinIO dan Iceberg) menjadi satu transaksi atomik. B2/P1 menambahkan guard objek dan upsert metadata untuk mengendalikan pengulangan tersebut. Posisi injeksi dan status parsial yang diharapkan dijelaskan di `docs/commit-boundaries.md`.
 
 ## Empat treatment
 
