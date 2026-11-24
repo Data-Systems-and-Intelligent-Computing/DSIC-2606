@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from collections import Counter
 import json
 import os
 from pathlib import Path
@@ -31,9 +32,13 @@ def _write_csv(path: Path, rows: list[dict], columns: list[str]) -> None:
 def create_snapshot(spark, *, run_id: str, treatment: str, output_dir: Path,
                     plan_path: Path, manifest_path: Path, batch_order_path: Path,
                     table: str, s3_client) -> dict:
-    plan = load_fault_plan(plan_path, "F1")
+    with Path(plan_path).open("r", encoding="utf-8-sig") as stream:
+        plan_point = yaml.safe_load(stream)["fault_plan"]["fault_point"]
+    plan = load_fault_plan(plan_path, plan_point)
     if plan.batch_id is None or plan.record_index is None:
-        raise ValueError("snapshot requires a frozen F1 plan")
+        raise ValueError("snapshot requires a frozen F1, F2, or F3 plan")
+    if plan.fault_point not in {"F1", "F2", "F3"}:
+        raise ValueError("pre-recovery snapshot supports F1, F2, or F3")
     manifest = load_manifest(manifest_path)
     batches = load_frozen_batches(batch_order_path)
     target_id = batches[plan.batch_id][plan.record_index - 1]
@@ -48,9 +53,15 @@ def create_snapshot(spark, *, run_id: str, treatment: str, output_dir: Path,
     object_uris = {str(row["uri"]) for row in objects}
     target_uri = str(target["expected_object_uri"])
     expected_object_count = plan.batch_id * 10 + plan.record_index
-    expected_metadata_count = expected_object_count - 1
-    prior_ids = batches[plan.batch_id][:plan.record_index - 1]
+    target_metadata_expected = plan.fault_point in {"F2", "F3"}
+    expected_metadata_count = expected_object_count if target_metadata_expected else expected_object_count - 1
+    expected_object_ids = [rid for batch in batches[:plan.batch_id] for rid in batch]
+    expected_object_ids.extend(batches[plan.batch_id][:plan.record_index])
+    expected_metadata_ids = expected_object_ids if target_metadata_expected else expected_object_ids[:-1]
     metadata_id_set = set(metadata_ids)
+    expected_object_uris = {
+        str(manifest[rid]["expected_object_uri"]) for rid in expected_object_ids
+    }
 
     root = Path(__file__).resolve().parents[2]
     with (root / "configs" / "treatments.yaml").open(encoding="utf-8-sig") as stream:
@@ -82,16 +93,22 @@ def create_snapshot(spark, *, run_id: str, treatment: str, output_dir: Path,
                ["recording_id", "device_id", "start_time", "object_uri", "file_size_bytes", "sha256"])
     checks = {
         "target_object_exists": target_uri in object_uris,
-        "target_metadata_absent": target_id not in metadata_id_set,
-        "all_prior_records_in_target_batch_have_metadata": all(rid in metadata_id_set for rid in prior_ids),
+        "target_metadata_presence_matches_plan":
+            (target_id in metadata_id_set) == target_metadata_expected,
+        "metadata_ids_match_expected_partial_prefix":
+            Counter(metadata_ids) == Counter(expected_metadata_ids),
+        "object_uris_match_expected_partial_prefix": object_uris == expected_object_uris,
         "metadata_count_is_expected": len(rows) == expected_metadata_count,
         "object_count_is_expected": len(objects) == expected_object_count,
     }
     if persistent:
         checks["persistent_target_offset_exists"] = checkpoint_state["target_offset_exists"]
-        checks["persistent_target_commit_absent"] = not checkpoint_state["target_commit_exists"]
+        expected_commit_exists = plan.fault_point == "F3"
+        checks["persistent_target_commit_matches_plan"] = (
+            checkpoint_state["target_commit_exists"] == expected_commit_exists
+        )
     summary = {
-        "run_id": run_id, "treatment": treatment, "fault_point": "F1",
+        "run_id": run_id, "treatment": treatment, "fault_point": plan.fault_point,
         "captured_utc": datetime.now(timezone.utc).isoformat(),
         "batch_id": plan.batch_id, "record_index": plan.record_index,
         "target_recording_id": target_id, "target_object_uri": target_uri,
@@ -122,7 +139,7 @@ def main() -> int:
     output_dir = args.output_dir or Path("/results/raw") / args.run_id / "pra"
     try:
         from pyspark.sql import SparkSession
-        spark = SparkSession.builder.appName("DSIC-2606-F1-pre-recovery-snapshot").getOrCreate()
+        spark = SparkSession.builder.appName("DSIC-2606-pre-recovery-snapshot").getOrCreate()
         try:
             result = create_snapshot(
                 spark, run_id=args.run_id, treatment=args.treatment,
@@ -135,7 +152,8 @@ def main() -> int:
     except Exception as exc:
         print(json.dumps({"all_checks_pass": False, "error": str(exc)}, sort_keys=True))
         return 1
-    print("F1_PRE_RECOVERY_SNAPSHOT " + json.dumps(result, sort_keys=True, separators=(",", ":")))
+    print(result["fault_point"] + "_PRE_RECOVERY_SNAPSHOT " +
+          json.dumps(result, sort_keys=True, separators=(",", ":")))
     return 0 if result["all_checks_pass"] else 1
 
 

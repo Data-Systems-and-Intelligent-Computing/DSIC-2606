@@ -703,3 +703,11 @@ Keluaran lengkap tersimpan di `docs/evidence/unittest-20261120.txt`. Pada titik 
 - **Urutan replay:** attempt 2 melanjutkan dari checkpoint. Setelah log attempt 1 dan 2 digabung, pemeriksa menyatakan `30 batch x 10 ID COCOK dengan batch_order_main.csv`.
 - **Audit I1–I7:** seluruh invariant lulus (`all_pass=true`, `exact_recovery=true`). Ada 300 objek dan 300 baris metadata tanpa ID hilang, duplikat, ekstra, metadata tidak cocok, objek yatim, atau metadata menggantung. I6 menghitung SHA-256 300 WAV (1.056.240.000 byte) tanpa mismatch. Durasi audit 53,187 detik.
 - **Bukti mentah:** `docs/evidence/reset-before-w2-retry-f1-P1-02.log`, `harness-w2-retry-f1-P1-02.log`, `w2-retry-f1-P1-02-attempt1.log`, `w2-retry-f1-P1-02-attempt2.log`, `snapshot-w2-retry-f1-P1-02-rerun.log`, `reconciliation-w2-retry-f1-P1-02.log`, `verify-batches-w2-retry-f1-P1-02.txt`, dan `checkpoint-w2-retry-f1-P1-02.txt`.
+
+### Dukungan injeksi F2/F3 untuk reproduksi — 23 November 2026
+
+- **Arahan pembimbing:** Pak Ardika membagikan ringkasan hasil F0–F3 dan mengizinkan Vania menambahkan dukungan F2/F3 melalui GitHub. Angka yang beliau laporkan adalah ringkasan eksternal; log dan commit sumber eksekusi beliau belum tercatat di repo ini.
+- **F2:** rencana dibekukan pada batch 14, rekaman ke-10. Driver menunggu SIGKILL setelah metadata seluruh batch berhasil di-commit, tetapi sebelum callback `foreachBatch` kembali kepada Spark. Dengan demikian checkpoint batch 14 seharusnya belum committed.
+- **F3:** rencana dibekukan pada batch 14, rekaman ke-10. Driver menunggu SIGKILL setelah commit batch 14 terkonfirmasi pada checkpoint dan sebelum feeder menerbitkan event 15.
+- **Perubahan kode:** loader dan schema fault plan menerima F1–F3; `microbatch.py` mengaktifkan hook F2 di batas metadata dan hook F3 di batas checkpoint; `snapshot_state.py` mengaudit hitungan parsial dan status commit checkpoint untuk F1–F3. Rencana ada di `fault_plans/F2_after_metadata_before_checkpoint.yaml` dan `fault_plans/F3_after_checkpoint.yaml`.
+- **Status bukti:** perubahan ini adalah implementasi untuk reproduksi. Belum ada eksekusi F2/F3 dari commit ini di Lightsail, belum ada log VM atau audit hasil; angka dari pesan pembimbing tidak dihitung sebagai bukti run repo ini.

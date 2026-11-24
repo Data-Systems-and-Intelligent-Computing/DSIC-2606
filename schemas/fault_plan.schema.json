@@ -41,6 +41,50 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": ["fault_plan"],
+      "properties": {
+        "fault_plan": {
+          "type": "object",
+          "required": ["fault_point", "enabled", "batch_id", "record_index", "stage", "target", "method", "rationale"],
+          "properties": {
+            "fault_point": {"const": "F2"},
+            "enabled": {"const": true},
+            "batch_id": {"type": "integer", "minimum": 0, "maximum": 29},
+            "record_index": {"const": 10},
+            "stage": {"const": "after_metadata_commit_before_checkpoint_commit"},
+            "target": {"const": "drv-{run_id}-a1"},
+            "method": {"const": "sigkill_on_marker"},
+            "rationale": {"type": "string", "minLength": 20}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": ["fault_plan"],
+      "properties": {
+        "fault_plan": {
+          "type": "object",
+          "required": ["fault_point", "enabled", "batch_id", "record_index", "stage", "target", "method", "rationale"],
+          "properties": {
+            "fault_point": {"const": "F3"},
+            "enabled": {"const": true},
+            "batch_id": {"type": "integer", "minimum": 0, "maximum": 29},
+            "record_index": {"const": 10},
+            "stage": {"const": "after_spark_checkpoint_commit_before_next_event_publication"},
+            "target": {"const": "drv-{run_id}-a1"},
+            "method": {"const": "sigkill_on_marker"},
+            "rationale": {"type": "string", "minLength": 20}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

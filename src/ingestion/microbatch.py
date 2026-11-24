@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.checkpointing.treatment_config import resolve_checkpoint_location
 from src.fault_injection.fault_plan import load_fault_plan
-from src.fault_injection.injector import F1DriverKillInjector
+from src.fault_injection.injector import DriverKillInjector
 from src.idempotence.metadata_upsert import upsert_metadata
 from src.idempotence.object_guard import guard_object
 from src.idempotence.conflict_guard import require_unique_recording_ids
@@ -114,7 +114,7 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
                    threshold: int, part_size: int, table: str, s3_client,
                    expected_spark_batch_id: int, idempotence_enabled: bool = False,
                    idempotence_config: dict | None = None,
-                   fault_injector: F1DriverKillInjector | None = None) -> int:
+                   fault_injector: DriverKillInjector | None = None) -> int:
     event_id = int(event["batch_id"])
     if event_id != expected_spark_batch_id:
         raise RuntimeError(
@@ -131,7 +131,7 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
     chunk_bytes = int(object_policy.get("download_chunk_bytes", 1024 * 1024))
 
     # Keep each record's boundaries explicit: confirmed object PUT, then one
-    # Iceberg append commit. This is the observable F1/F2 boundary in later phases.
+    # Iceberg append/upsert commit. F1 and F2 inject at distinct boundaries.
     metadata_rows_committed = 0
     for record_index, recording_id in enumerate(recording_ids, start=1):
         if recording_id not in manifest:
@@ -185,6 +185,16 @@ def _process_event(spark, event: dict, manifest: dict, corpus_root: Path,
             LOGGER.info("ICEBERG_COMMIT_COMPLETED batch_id=%d recording_id=%s rows=1",
                         event_id, recording_id)
         metadata_rows_committed += 1
+        if fault_injector is not None:
+            fault_injector.after_metadata_commit(
+                batch_id=event_id, record_index=record_index,
+                recording_id=recording_id,
+                object_uri=str(source["expected_object_uri"]),
+                object_key=str(upload_item.get("object_key") or object_target(
+                    str(source["expected_object_uri"])
+                )[1]),
+                metadata_rows_committed=metadata_rows_committed,
+            )
 
     LOGGER.info("REPLAY_BATCH_COMPLETED batch_id=%d recording_ids=%s",
                 event_id, json.dumps(recording_ids, separators=(",", ":")))
@@ -263,13 +273,18 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
         raise ValueError("RUN_ID and TREATMENT are required")
 
     fault_point = os.environ.get("FAULT_POINT", "F0").upper()
-    if fault_point not in {"F0", "F1"}:
-        raise ValueError("this ingestion version supports FAULT_POINT=F0 or F1")
+    if fault_point not in {"F0", "F1", "F2", "F3"}:
+        raise ValueError("this ingestion version supports FAULT_POINT=F0, F1, F2, or F3")
     plan_path = Path(os.environ.get(
-        "FAULT_PLAN_PATH", root / "fault_plans" / f"{fault_point}_{'no_failure' if fault_point == 'F0' else 'after_object_before_metadata'}.yaml"
+        "FAULT_PLAN_PATH", root / "fault_plans" / {
+            "F0": "F0_no_failure.yaml",
+            "F1": "F1_after_object_before_metadata.yaml",
+            "F2": "F2_after_metadata_before_checkpoint.yaml",
+            "F3": "F3_after_checkpoint.yaml",
+        }[fault_point]
     ))
     fault_plan = load_fault_plan(plan_path, fault_point)
-    fault_injector = F1DriverKillInjector(
+    fault_injector = DriverKillInjector(
         fault_plan, run_id, treatment, Path(os.environ.get("SIGNAL_DIR", "/signals"))
     )
 
@@ -374,6 +389,19 @@ def run_replay(spark, run_id: str | None = None, treatment: str | None = None) -
             completed = processed[-1]
         else:
             completed = committed
+        if completed is not None and fault_injector is not None:
+            target_batch = batches[completed]
+            target_id = target_batch[-1]
+            target_record = manifest[target_id]
+            _, target_key = object_target(str(target_record["expected_object_uri"]))
+            fault_injector.after_checkpoint_commit(
+                batch_id=completed, record_index=len(target_batch),
+                recording_id=target_id,
+                object_uri=str(target_record["expected_object_uri"]),
+                object_key=target_key,
+                metadata_rows_committed=len(target_batch),
+                checkpoint_commit_confirmed=(committed == completed),
+            )
         latest_landing = _latest_landing_event(landing)
         if completed is None or latest_landing != completed:
             raise RuntimeError(f"cannot advance feeder: checkpoint={completed}, landing={latest_landing}")

@@ -48,4 +48,4 @@ Aturan ini dibekukan untuk uji B2/P1 Hari 8–9. Jika uji pilot menunjukkan caca
 
 Lokasi checkpoint adalah satu-satunya kunci konfigurasi yang membedakan B0 dan B1. Akar checkpoint tidak ditempatkan di MinIO; MinIO adalah object storage/sink yang diuji, sedangkan checkpoint disimpan pada volume sementara atau disk VM sesuai treatment. Self-test instrumen T5a–T5c memverifikasi penanda persistent bertahan, penanda ephemeral hilang pada kontainer baru, dan mount ephemeral bertipe `tmpfs`.
 
-Perilaku B0/B1 pada F0 dan restart sudah diuji; B2/P1 memakai kebijakan idempotence yang sama. Probe sink idempotence, B2/F0, dan P1/F0 telah lulus di Lightsail. Bukti B2/P1 F0 ada di `docs/evidence/` dan dirangkum di `docs/logbook.md`. Fault/restart B2/P1 masih belum dijalankan.
+Perilaku F0 B0/B1/B2/P1 telah diuji dan B2/P1 memakai kebijakan idempotence yang sama. F1 telah diuji dua kali per treatment. Hook F2/F3 disiapkan pada batas commit yang dijelaskan di `docs/commit-boundaries.md`; run VM dan audit F2/F3 dengan commit ini masih harus dilakukan.

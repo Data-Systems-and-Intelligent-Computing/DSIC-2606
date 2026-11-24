@@ -1,0 +1,12 @@
+fault_plan:
+  fault_point: F2
+  enabled: true
+  batch_id: 14
+  record_index: 10
+  stage: after_metadata_commit_before_checkpoint_commit
+  target: "drv-{run_id}-a1"
+  method: sigkill_on_marker
+  rationale: >-
+    Batch 14 is held constant across treatments. Stop after all ten metadata
+    rows in the batch have committed but before foreachBatch returns to Spark,
+    so the Spark checkpoint must not contain commit 14.

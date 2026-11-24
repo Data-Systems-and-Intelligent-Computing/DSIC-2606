@@ -1,0 +1,11 @@
+fault_plan:
+  fault_point: F3
+  enabled: true
+  batch_id: 14
+  record_index: 10
+  stage: after_spark_checkpoint_commit_before_next_event_publication
+  target: "drv-{run_id}-a1"
+  method: sigkill_on_marker
+  rationale: >-
+    Batch 14 is held constant across treatments. Stop only after Spark's
+    checkpoint commit 14 is confirmed and before the feeder publishes event 15.

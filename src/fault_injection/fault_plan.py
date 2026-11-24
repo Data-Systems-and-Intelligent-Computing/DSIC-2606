@@ -34,29 +34,36 @@ def load_fault_plan(path: Path, expected_fault_point: str) -> FaultPlan:
         if enabled:
             raise ValueError("F0 must not inject a failure")
         return FaultPlan(fault_point="F0", enabled=False)
-    if point != "F1":
+    stages = {
+        "F1": "after_object_put_before_metadata_commit",
+        "F2": "after_metadata_commit_before_checkpoint_commit",
+        "F3": "after_spark_checkpoint_commit_before_next_event_publication",
+    }
+    if point not in stages:
         raise ValueError(f"unsupported fault point: {point!r}")
     if not enabled:
-        raise ValueError("F1 plan must be enabled")
+        raise ValueError(f"{point} plan must be enabled")
     try:
         batch_id, record_index = int(raw["batch_id"]), int(raw["record_index"])
     except (KeyError, TypeError, ValueError) as exc:
-        raise ValueError("F1 requires integer batch_id and record_index") from exc
+        raise ValueError(f"{point} requires integer batch_id and record_index") from exc
     if batch_id < 0:
-        raise ValueError("F1 batch_id must be non-negative")
+        raise ValueError(f"{point} batch_id must be non-negative")
     if not 1 <= record_index <= 10:
-        raise ValueError("F1 record_index must be between 1 and 10")
-    if raw.get("stage") != "after_object_put_before_metadata_commit":
-        raise ValueError("F1 stage must be after_object_put_before_metadata_commit")
+        raise ValueError(f"{point} record_index must be between 1 and 10")
+    if point in {"F2", "F3"} and record_index != 10:
+        raise ValueError(f"{point} targets the end of the ten-record micro-batch (record_index=10)")
+    if raw.get("stage") != stages[point]:
+        raise ValueError(f"{point} stage must be {stages[point]}")
     if raw.get("target") != "drv-{run_id}-a1":
-        raise ValueError("F1 target must be drv-{run_id}-a1")
+        raise ValueError(f"{point} target must be drv-{run_id}-a1")
     if raw.get("method") != "sigkill_on_marker":
-        raise ValueError("F1 method must be sigkill_on_marker")
+        raise ValueError(f"{point} method must be sigkill_on_marker")
     rationale = raw.get("rationale")
     if not isinstance(rationale, str) or len(rationale.strip()) < 20:
-        raise ValueError("F1 rationale must explain the frozen position")
+        raise ValueError(f"{point} rationale must explain the frozen position")
     return FaultPlan(
-        fault_point="F1", enabled=True, batch_id=batch_id,
+        fault_point=point, enabled=True, batch_id=batch_id,
         record_index=record_index, stage=str(raw["stage"]),
         target=str(raw["target"]), method=str(raw["method"]),
         rationale=rationale.strip(),
